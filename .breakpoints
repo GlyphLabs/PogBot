@@ -1,0 +1,28 @@
+{
+  "files": {
+    "cogs/chatbot.py": [
+      {
+        "id": "07618437-419d-411e-9475-9ebc858c84a1",
+        "line": 37,
+        "version": 1874,
+        "index": 990
+      }
+    ],
+    "cogs/text.py": [
+      {
+        "id": "cd265fac-97a3-4f8d-a0eb-70de3e361054",
+        "line": 5,
+        "version": 184,
+        "index": 117
+      }
+    ],
+    "main.py": [
+      {
+        "id": "8f434f70-396a-4bc5-9df2-20d27839d81d",
+        "line": 895,
+        "version": 5995,
+        "index": 29991
+      }
+    ]
+  }
+}
