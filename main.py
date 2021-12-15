@@ -223,6 +223,7 @@ async def help(ctx, type=None):
         embed.set_author(name="Specrypt Help")
         embed.add_field(name="encrypt", value="Encrypts plaintext to specrypt")
         embed.add_field(name="decrypt", value="Decrypts specrypted text into plaintext")
+        embed.set_footer(name="Made by Random_1s")
         await ctx.author.send(embed=embed)
         await ctx.send("Sent you a list of commands in DMs!")
     else:
@@ -526,6 +527,7 @@ async def ship(ctx, name1: clean_content, name2: clean_content):
     )
     emb.add_field(name="Results:", value=f"{shipnumber}%", inline=True)
     emb.add_field(name="Status:", value=(status), inline=False)
+    emb.set_footer(name="Made by Random_1s")
     await ctx.send(embed=emb)
 
 
@@ -598,6 +600,7 @@ async def eightball(ctx, *, _ballInput: clean_content):
         name="Magic 8 ball",
         icon_url="https://www.horoscope.com/images-US/games/game-magic-8-ball-no-text.png",
     )
+    emb.set_footer(name="Made by Random_1s")
     await ctx.send(embed=emb)
 
 
@@ -651,6 +654,7 @@ async def gay_scanner(ctx, *, user: discord.Member):
     emb.add_field(name="Gayness:", value=f"{gayness}% gay")
     emb.add_field(name="Comment:", value=f"{gayStatus} :kiss_mm:")
     emb.set_author(name="Gay-Scanner™")
+    emb.set_footer(name="Made by Random_1s")
     await ctx.send(embed=emb)
 
 
@@ -682,6 +686,7 @@ async def ping(ctx):
         name="Average speed",
         value=f"{round((round(sum(times)) + round(bot.latency * 1000))/4)}ms",
     )
+    embed.set_footer(name="Made by Random_1s")
     embed.set_footer(text=f"Estimated total time elapsed: {round(sum(times))}ms")
     await msg.edit(
         content=f":ping_pong: **{round((round(sum(times)) + round(bot.latency * 1000))/4)}ms**",
@@ -710,10 +715,11 @@ async def links(ctx):
         inline=False,
     )
     embed.add_field(
-        name="YouTube Channel (coding)",
-        value="[Click Here](https://www.youtube.com/channel/UCN0PkVpzRDJMZnCj1leZoeA?sub_confirmation=1)",
+        name="GitHub",
+        value="[Click Here](https://github.com/Random-1s)",
         inline=False,
     )
+    embed.set_footer(name="Made by Random_1s")
     await ctx.author.send(embed=embed)
     await ctx.send("I sent you them in dms because I dont want to advertise.")
 
@@ -732,7 +738,7 @@ async def botinfo(ctx):
         name="Info",
         icon_url="https://media.discordapp.net/attachments/846429112608620620/846471414076669982/discord-avatar-128-BSK73.gif",
     )
-    embed.add_field(name="Owner:", value="ParagonX#1142\nSquook#0001", inline=False)
+    embed.add_field(name="Owner:", value="Random_1s#9999\nSquook#0001", inline=False)
     embed.add_field(name="Language:", value="Python", inline=False)
     embed.add_field(name="Prefix:", value="pog ", inline=False)
     embed.add_field(name="Bot Created:", value="May 25, 2021", inline=False)
@@ -770,6 +776,7 @@ async def userinfo(ctx, member: discord.Member = None):
 
     embed.add_field(name="Roles:", value="".join([role.mention for role in roles]))
     embed.add_field(name="Highest Role:", value=member.top_role.mention)
+    embed.set_footer(name="Made by Random_1s")
     print(member.top_role.mention)
     await ctx.send(embed=embed)
 
@@ -802,6 +809,7 @@ async def server(ctx):
     )
     emb.set_footer(text=ctx.author)
     emb.set_thumbnail(url=bot.user.avatar_url)
+    emb.set_footer(name="Made by Random_1s")
     await ctx.send(embed=emb)
 
 
@@ -814,6 +822,7 @@ async def dm(
     embed = discord.Embed(colour=discord.Colour.orange())
     embed.set_author(name=f"You got a message from {ctx.author}")
     embed.add_field(name="Message:", value=content, inline=False)
+    embed.set_footer(name="Made by Random_1s")
     await channel.send(embed=embed)
 
 
@@ -831,7 +840,8 @@ async def uptime(ctx):
     text = str(datetime.timedelta(seconds=difference))
     embed = discord.Embed(colour=0xC8DC6C)
     embed.add_field(name="Uptime", value=text)
-    embed.set_footer(text="PogBot")
+    embed.set_footer(text="Pog Memer")
+    embed.set_footer(name="Made by Random_1s")
     try:
         await ctx.send(embed=embed)
     except discord.HTTPException:

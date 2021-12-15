@@ -58,6 +58,7 @@ class Meme(commands.Cog):
     embed.set_author(name=f"{sub}", url=f"https://reddit.com/{sub}")
     embed.set_footer(text=f"👍 {ups} • u/{author}")
     embed.set_image(url=memeurl)
+    embed.set_footer(name="Made by Random_1s")
     await ctx.send(embed=embed)
 
   @commands.command()
@@ -106,6 +107,7 @@ class Meme(commands.Cog):
                 embed = discord.Embed(description=str(st["title"]), color=discord.Color.random())
                 embed.set_author(name="r/showerthoughts",url="https://reddit.com/r/showerthoughts")
                 embed.set_footer(text=f"👍 {st['upvotes']} • u/{st['author']}")
+                embed.set_footer(name="Made by Random_1s")
                 await ctx.send(embed=embed)
                 return
             await ctx.send(f"_`{str(self.bot.showercache['message'])}` ({str(self.bot.showercache['error'])})_")
