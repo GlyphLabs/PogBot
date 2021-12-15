@@ -14,10 +14,10 @@ import requests
 import json
 
 devs = [
-    536644802595520534,  # terabyte.#4258
+    536644802595520534,  # thrizzle.#4258
     819786180597907497,  # griffin#1405
     656021685203501066,  # RyZe#7968
-    839514280251359292,  # ! ParagonX#6361
+    839514280251359292,  # Random_1s#999
 ]
 poglist = [
     "pog",
