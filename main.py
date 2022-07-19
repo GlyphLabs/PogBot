@@ -9,7 +9,7 @@ from discord.ext.commands import clean_content
 from cachetools import LRUCache
 import aiohttp
 import operator
-from keep_alive import keep_alive
+# from keep_alive import keep_alive
 import requests
 import json
 from asyncio import sleep
@@ -928,6 +928,7 @@ bot.load_extension("jishaku")
 bot.load_extension("cogs.error")
 bot.load_extension("cogs.meme")
 bot.load_extension("cogs.text")
-token = os.environ.get("token")
-keep_alive()
+token = os.environ.get("TOKEN")
+print(os.environ)
+# keep_alive()
 bot.run(token)
