@@ -4,8 +4,8 @@
       {
         "id": "07618437-419d-411e-9475-9ebc858c84a1",
         "line": 37,
-        "version": 1874,
-        "index": 990
+        "version": 1900,
+        "index": 989
       }
     ],
     "cogs/text.py": [
@@ -19,9 +19,9 @@
     "main.py": [
       {
         "id": "8f434f70-396a-4bc5-9df2-20d27839d81d",
-        "line": 905,
-        "version": 6182,
-        "index": 30394
+        "line": 902,
+        "version": 6483,
+        "index": 30264
       }
     ]
   }

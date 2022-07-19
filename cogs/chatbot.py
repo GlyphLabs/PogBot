@@ -5,7 +5,7 @@ from prsaw import RandomStuffV2
 from random import choice
 from cachetools import LRUCache
 # initiate the object
-rs = RandomStuffV2() 
+rs = RandomStuffV2()
 
 dunno = [ # List of error responses for ai
   "IDK.",
@@ -28,7 +28,7 @@ class chatbot(commands.Cog):
   async def aichannel(self,ctx,op,channel:discord.TextChannel):
     db[str(ctx.guild.id)] = str(channel.id)
     await ctx.send("Set ai channel to "+channel.name)
-    await channel.send("Hi I am Pog memer, you can chat with me here")
+    await channel.send("Hi I am Pog Memer, you can chat with me here")
 
   @commands.Cog.listener()
   async def on_message(self,message):

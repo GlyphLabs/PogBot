@@ -73,6 +73,7 @@ async def on_ready():
             type=discord.ActivityType.watching, name=f"you type 'pog' in chat."
         )
     )
+    bot.load_extension("cogs.music")
 
 
 @bot.event
@@ -88,7 +89,9 @@ async def on_message(message):
             await asyncio.sleep(1)
             custom_emoji = discord.utils.get(bot.emojis, name="POG")
             await message.add_reaction(custom_emoji)
-
+    if message.content == "family":
+      await message.channel.send("https://tenor.com/view/i-dont-have-friends-i-have-family-theyre-not-my-friends-theyre-my-family-more-than-friends-gif-16061717")
+	
 
 @bot.command()
 async def help(ctx, type=None):
@@ -116,6 +119,10 @@ async def help(ctx, type=None):
             name="help game-info",
             value="Shows what the most popular games are in the server and who's playing them",
         )
+        embed.add_field(
+			name="help music",
+			value="All of the music commands available"
+		)
         await ctx.send(embed=embed)
     elif type == "general":
         embed = discord.Embed(colour=discord.Colour.orange())
@@ -223,6 +230,16 @@ async def help(ctx, type=None):
         embed.set_author(name="Specrypt Help")
         embed.add_field(name="encrypt", value="Encrypts plaintext to specrypt")
         embed.add_field(name="decrypt", value="Decrypts specrypted text into plaintext")
+    elif type == "music":
+        embed = discord.Embed(colour=discord.Colour.orange())
+        embed.set_author(name="Music (Beta)")
+        embed.add_field(name="play", value="Play any song!")
+        embed.add_field(name="skip", value="Skip to the next song in queue")
+        embed.add_field(name="pause", value="Pauses the current playing song")
+        embed.add_field(name="disconnect", value="Disconnect the bot from the voice channel")
+        embed.add_field(name="nowplaying", value="Shows the current song thats playing")
+        embed.add_field(name="queue", value="Shows all the songs in queue")
+        embed.add_field(name="clear", value="Clears the queue")
         await ctx.author.send(embed=embed)
         await ctx.send("Sent you a list of commands in DMs!")
     else:
@@ -732,7 +749,7 @@ async def botinfo(ctx):
         name="Info",
         icon_url="https://media.discordapp.net/attachments/846429112608620620/846471414076669982/discord-avatar-128-BSK73.gif",
     )
-    embed.add_field(name="Owner:", value="Random_1s#9999\nSquook#0001", inline=False)
+    embed.add_field(name="Owner:", value="Paragonii#6942\nSquook#0001", inline=False)
     embed.add_field(name="Language:", value="Python", inline=False)
     embed.add_field(name="Prefix:", value="pog ", inline=False)
     embed.add_field(name="Bot Created:", value="May 25, 2021", inline=False)
@@ -776,7 +793,7 @@ async def userinfo(ctx, member: discord.Member = None):
 
 @bot.command(aliases=["server-info"])
 @commands.guild_only()
-async def server(ctx):
+async def serverinfo(ctx):
     total_text_channels = len(ctx.guild.text_channels)
     total_voice_channels = len(ctx.guild.voice_channels)
     total_channels = total_text_channels + total_voice_channels

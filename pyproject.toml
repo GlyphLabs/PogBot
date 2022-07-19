@@ -16,6 +16,11 @@ replit = "^3.2.4"
 prsaw = "^0.4.0"
 cachetools = "^4.2.2"
 jishaku = "^2.2.0"
+utils = "^1.0.1"
+youtube_dl = "^2021.12.17"
+lavalink = "^3.1.7"
+dpymenus = "^2.1.5"
+ksoftapi = "^0.4.1"
 
 [tool.poetry.dev-dependencies]
 
