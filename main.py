@@ -12,6 +12,7 @@ import operator
 from keep_alive import keep_alive
 import requests
 import json
+from asyncio import sleep
 
 devs = [
     536644802595520534,  # thrizzle.#4258
@@ -65,14 +66,29 @@ memeSubreddits = [
 start_time = time.time()
 
 
+async def status():
+    while True:
+        await bot.change_presence(
+            activity=discord.Activity(
+                type=discord.ActivityType.watching, name=f"you type 'pog' in chat"
+            )
+        )
+        await sleep(10)
+        await bot.change_presence(activity=discord.Game(name="on prsaw"))
+        await sleep(10)
+        await bot.change_presence(
+            activity=discord.Activity(
+                type=discord.ActivityType.listening, name="the new music commands"
+            )
+        )
+        await sleep(10)  ## take off if you want.
+
+
 @bot.event
 async def on_ready():
+    await bot.wait_until_ready()
     print("Bot is ready")
-    await bot.change_presence(
-        activity=discord.Activity(
-            type=discord.ActivityType.watching, name=f"you type 'pog' in chat."
-        )
-    )
+    bot.loop.create_task(status())
     bot.load_extension("cogs.music")
 
 
@@ -90,8 +106,10 @@ async def on_message(message):
             custom_emoji = discord.utils.get(bot.emojis, name="POG")
             await message.add_reaction(custom_emoji)
     if message.content == "family":
-      await message.channel.send("https://tenor.com/view/i-dont-have-friends-i-have-family-theyre-not-my-friends-theyre-my-family-more-than-friends-gif-16061717")
-	
+        await message.channel.send(
+            "https://tenor.com/view/i-dont-have-friends-i-have-family-theyre-not-my-friends-theyre-my-family-more-than-friends-gif-16061717"
+        )
+
 
 @bot.command()
 async def help(ctx, type=None):
@@ -113,16 +131,13 @@ async def help(ctx, type=None):
         )
         embed.add_field(
             name="help specrypt",
-            value="My own, very lightweight form of encryption (secret language) I made because I was bored.",
+            value="My own, very lightweight form of encryption (secret language) SpectrixDev made because he was bored ig.",
         )
         embed.add_field(
             name="help game-info",
             value="Shows what the most popular games are in the server and who's playing them",
         )
-        embed.add_field(
-			name="help music",
-			value="All of the music commands available"
-		)
+        embed.add_field(name="help music", value="All of the music commands available")
         await ctx.send(embed=embed)
     elif type == "general":
         embed = discord.Embed(colour=discord.Colour.orange())
@@ -236,7 +251,9 @@ async def help(ctx, type=None):
         embed.add_field(name="play", value="Play any song!")
         embed.add_field(name="skip", value="Skip to the next song in queue")
         embed.add_field(name="pause", value="Pauses the current playing song")
-        embed.add_field(name="disconnect", value="Disconnect the bot from the voice channel")
+        embed.add_field(
+            name="disconnect", value="Disconnect the bot from the voice channel"
+        )
         embed.add_field(name="nowplaying", value="Shows the current song thats playing")
         embed.add_field(name="queue", value="Shows all the songs in queue")
         embed.add_field(name="clear", value="Clears the queue")
@@ -728,7 +745,12 @@ async def links(ctx):
     )
     embed.add_field(
         name="GitHub",
-        value="[Click Here](https://github.com/Random-1s)",
+        value="[Click Here](https://github.com/Paragonii)",
+        inline=False,
+    )
+    embed.add_field(
+        name="Changelog",
+        value="[Click Here](https://github.com/Paragonii/Bot-Changelogs/blob/main/POGBOT.md)",
         inline=False,
     )
     await ctx.author.send(embed=embed)
