@@ -88,7 +88,7 @@ async def on_ready():
     await bot.wait_until_ready()
     print("Bot is ready")
     bot.loop.create_task(status())
-    bot.load_extension("cogs.music")
+    # bot.load_extension("cogs.music")
 
 
 @bot.event
