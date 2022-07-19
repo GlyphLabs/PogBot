@@ -3,7 +3,7 @@ import re
 
 # import math
 import discord
-import ksoftapi
+# import ksoftapi
 import lavalink
 from discord.ext import commands
 
@@ -385,60 +385,60 @@ class Music(commands.Cog):
             else:
                 await ctx.send(embed=emlist[0])
 
-    @commands.command(
-        name="lyrics",
-        description="Get the lyrics for a song! Defaults to the one playing!",
-        usage="lyrics [song]",
-        aliases=["ly"],
-    )
-    async def lyrics(self, ctx, song="none"):
-        try:
-            player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-        except:
-            if song == "none" and not player.is_playing:
-                await ctx.send("You forgot to tell me the song!")
-            else:
-                try:
-                    results = await kclient.music.lyrics(song)
-                except ksoftapi.NoResults:
-                    embed = discord.Embed(
-                        title="I couldn't find the lyrics for that song!",
-                        color=discord.Color.red(),
-                    )
-                    await ctx.send(embed=embed)
-                    return
-                else:
-                    first = results[0]
-                    embed = discord.Embed(
-                        title=f"Lyrics for {first.name}",
-                        description=first.lyrics[:1024],
-                        color=discord.Color.green(),
-                    )
-                    embed.set_footer(text="Powered by KSoft.SI")
-        else:
-            if song == "none":
-                if player.is_playing:
-                    song = player.current.title
-                else:
-                    await ctx.send("You forgot to tell me which song!")
-            try:
-                results = await kclient.music.lyrics(song)
-            except ksoftapi.NoResults:
-                embed = discord.Embed(
-                    title="I couldn't find the lyrics for that song!",
-                    color=discord.Color.red(),
-                )
-                await ctx.send(embed=embed)
-                return
-            else:
-                first = results[0]
-                embed = discord.Embed(
-                    title=f"Lyrics for {first.name}",
-                    description=first.lyrics[:1024],
-                    color=discord.Color.green(),
-                )
-                embed.set_footer(text="Powered by KSoft.SI")
-                await ctx.send(embed=embed)
+    # @commands.command(
+    #     name="lyrics",
+    #     description="Get the lyrics for a song! Defaults to the one playing!",
+    #     usage="lyrics [song]",
+    #     aliases=["ly"],
+    # )
+    # async def lyrics(self, ctx, song="none"):
+    #     try:
+    #         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+    #     except:
+    #         if song == "none" and not player.is_playing:
+    #             await ctx.send("You forgot to tell me the song!")
+    #         else:
+    #             try:
+    #                 results = await kclient.music.lyrics(song)
+    #             except ksoftapi.NoResults:
+    #                 embed = discord.Embed(
+    #                     title="I couldn't find the lyrics for that song!",
+    #                     color=discord.Color.red(),
+    #                 )
+    #                 await ctx.send(embed=embed)
+    #                 return
+    #             else:
+    #                 first = results[0]
+    #                 embed = discord.Embed(
+    #                     title=f"Lyrics for {first.name}",
+    #                     description=first.lyrics[:1024],
+    #                     color=discord.Color.green(),
+    #                 )
+    #                 embed.set_footer(text="Powered by KSoft.SI")
+    #     else:
+    #         if song == "none":
+    #             if player.is_playing:
+    #                 song = player.current.title
+    #             else:
+    #                 await ctx.send("You forgot to tell me which song!")
+    #         try:
+    #             results = await kclient.music.lyrics(song)
+    #         except ksoftapi.NoResults:
+    #             embed = discord.Embed(
+    #                 title="I couldn't find the lyrics for that song!",
+    #                 color=discord.Color.red(),
+    #             )
+    #             await ctx.send(embed=embed)
+    #             return
+    #         else:
+    #             first = results[0]
+    #             embed = discord.Embed(
+    #                 title=f"Lyrics for {first.name}",
+    #                 description=first.lyrics[:1024],
+    #                 color=discord.Color.green(),
+    #             )
+    #             embed.set_footer(text="Powered by KSoft.SI")
+    #             await ctx.send(embed=embed)
 
     @commands.command(
         name="clear",
