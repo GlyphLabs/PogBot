@@ -72,12 +72,12 @@ async def status():
                 type=discord.ActivityType.watching, name=f"you type 'pog' in chat"
             )
         )
-        await sleep(10)
+        await sleep(60)
         await bot.change_presence(activity=discord.Game(name="on prsaw"))
-        await sleep(10)
+        await sleep(60)
         await bot.change_presence(
             activity=discord.Activity(
-                type=discord.ActivityType.listening, name="the new music commands"
+                type=discord.ActivityType.listening, name="music"
             )
         )
         await sleep(10)  ## take off if you want.
