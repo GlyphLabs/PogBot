@@ -5,7 +5,7 @@ from cachetools import LFUCache
 from os import environ
 from aiohttp import ClientSession
 from typing import Optional
-from db import GuildSettings
+from db import GuildSettings, session
 
 # initiate the object
 
@@ -31,8 +31,11 @@ class chatbot(commands.Cog):
         self.bkey = environ.get("BRAINSHOP_KEY")
         self.http = ClientSession()
 
+
+
     @commands.command()
     async def aichannel(self, ctx: commands.Context, channel: TextChannel):
+        g = GuildSettings.get
         await GuildSettings.update_chatbot_channel(ctx.guild.id, channel.id)
         self.cache[ctx.guild.id] = channel.id
         await ctx.send("Set ai channel to " + channel.name)

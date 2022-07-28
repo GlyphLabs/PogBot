@@ -1,18 +1,16 @@
-from typing import Optional
 from sqlalchemy import Integer, Column
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.future import select
 from sqlalchemy.orm import sessionmaker
 from os import environ
 
-dsn = environ["DATABASE_URL"]
-conf = {'dsn': dsn}
 Base = declarative_base()
-engine = create_async_engine(url=dsn,**conf)
+engine = create_async_engine(url=environ["DATABASE_URL"])
 session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
-class EconomyData(Mixin, Base): # type: ignore
+class EconomyData(Base): # type: ignore
     __tablename__ = 'economy'
     id = Column(Integer, autoincrement=True,  primary_key=True)
     wallet = Column(Integer)
@@ -38,20 +36,21 @@ class EconomyData(Mixin, Base): # type: ignore
         return f"<EconomyData(id={self.id})>"
 
 
-class GuildSettings(Mixin, Base): # type: ignore
+class GuildSettings(Base): # type: ignore
     __tablename__ = 'guild_settings'
     guild_id = Column(Integer, primary_key=True)
     chatbot_channel = Column(Integer)
 
-    @classmethod
-    async def update_chatbot_channel(cls, guild_id: int, channel_id: int):
+    async def update_chatbot_channel(self, guild_id: int, channel_id: int):
         async with session() as s:
-            await s.execute(cls.update().where(cls.guild_id == guild_id).values(chatbot_channel=channel_id))
+            await self.update(s, guild_id=guild_id, chatbot_channel=channel_id)
 
     @classmethod
     async def get(cls, guild_id: int):
-        async with session() as s:
-            return await s.query(cls).filter(cls.guild_id == guild_id).first()
+        query = select(cls).where(cls.guild_id == guild_id)
+        results = await session().execute(query)
+        result = results.one()
+        return result
 
     def __repr__(self):
         return f"<GuildSettings(guild_id={self.guild_id})>"
