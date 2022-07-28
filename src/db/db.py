@@ -18,11 +18,23 @@ class EconomyData(Base):  # type: ignore
     bank_capacity = Column(Integer)
 
     @classmethod
-    async def update_wallet(cls, id: int, amt_to_add: int) -> None:
+    async def update_wallet(cls, id: int, new_amount: int) -> None:
         async with session() as s:
-            await s.execute(
-                cls.update().where(cls.id == id).values(wallet=cls.wallet + amt_to_add)
-            )
+            await s.merge(EconomyData(id=id, wallet=new_amount))
+
+    @classmethod
+    async def get(cls, id: int):
+        query = select(cls).where(cls.id == id)
+        async with session() as s:
+            results = await s.execute(query)
+            if not results:
+                d = EconomyData(id=id, wallet=0, bank=0, bank_capacity=20000)
+                s.add()
+                await s.commit()
+                return EconomyData(id=id, wallet=0, bank=0, bank_capacity=20000)
+
+        result = results.one()
+        return result[0] if result else None
 
     @classmethod
     async def update_bank(cls, id: int, amt_to_add: int) -> None:
@@ -53,8 +65,10 @@ class GuildSettings(Base):  # type: ignore
     @classmethod
     async def update_chatbot_channel(cls, guild_id: int, channel_id: int):
         async with session() as s:
-            results = await s.add(cls(guild_id=guild_id, chatbot_channel=channel_id))
-            # await self.update(s, guild_id=guild_id, chatbot_channel=channel_id)
+            await s.merge(
+                GuildSettings(guild_id=guild_id, chatbot_channel=channel_id)
+            )
+            await s.commit()
 
     @classmethod
     async def get(cls, guild_id: int):
