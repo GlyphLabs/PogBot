@@ -31,8 +31,6 @@ class chatbot(commands.Cog):
         self.bkey = environ.get("BRAINSHOP_KEY")
         self.http = ClientSession()
 
-
-
     @commands.command()
     async def aichannel(self, ctx: commands.Context, channel: TextChannel):
         g = GuildSettings.get
@@ -71,7 +69,7 @@ class chatbot(commands.Cog):
             res = await response.json()
             await message.reply(res["cnt"])
         except:
-            await message.reply(choice(dunno)) # # nosec: B311
+            await message.reply(choice(dunno))  # # nosec: B311
 
     @commands.command()
     async def ai(self, ctx: commands.Context, message: Message):
@@ -86,7 +84,7 @@ class chatbot(commands.Cog):
             res = await response.json()
             await message.reply(res["cnt"])
         except:
-            await message.reply(choice(dunno)) # nosec: B311
+            await message.reply(choice(dunno))  # nosec: B311
 
 
 def setup(client):

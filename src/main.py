@@ -53,9 +53,7 @@ async def status():
         await bot.change_presence(activity=discord.Game(name="on prsaw"))
         await sleep(60)
         await bot.change_presence(
-            activity=discord.Activity(
-                type=discord.ActivityType.listening, name="music"
-            )
+            activity=discord.Activity(type=discord.ActivityType.listening, name="music")
         )
         await sleep(10)  ## take off if you want.
 
@@ -239,7 +237,9 @@ async def help(ctx, type=None):
         embed.add_field(name="work", value="Earn coins by working!")
         embed.add_field(name="rob", value="Rob any user.")
         embed.add_field(name="dep", value="Deposit your coins to your bank")
-        embed.add_field(name="withdraw", value="Withdraw coins from your bank to your wallet")
+        embed.add_field(
+            name="withdraw", value="Withdraw coins from your bank to your wallet"
+        )
         await ctx.author.send(embed=embed)
         await ctx.send("Sent you a list of commands in DMs!")
     else:
@@ -717,7 +717,6 @@ async def botinfo(ctx: Context):
     embed.add_field(name="Prefix:", value="pog ", inline=False)
     embed.add_field(name="Bot Created:", value="May 25, 2021", inline=False)
     await ctx.send(embed=embed)
-
 
 
 @bot.command(aliases=["user-info"])
