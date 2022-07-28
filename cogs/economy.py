@@ -7,7 +7,7 @@ mongo_url = os.environ.get("MONGO_URL")
 cluster = MongoClient(mongo_url)
 db = cluster["Sentry"]
 collection = db["econ"]
-class Economy(commands.Cog,name="Economy"):
+class economy(commands.Cog,name="economy"):
     def __init__(self,bot):
           self.bot = bot
     @commands.command(name="Rob",description="Rob a user!")
