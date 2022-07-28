@@ -846,9 +846,10 @@ async def shutdown(ctx: Context):
 @commands.guild_only()
 async def roast(ctx: Context):
     await ctx.trigger_typing()
-    response = await aiohttp.ClientSession().get(
-        url="https://evilinsult.com/generate_insult.php?lang=en&type=json"
-    )
+    async with aiohttp.ClientSession() as session:
+        response = await session.get(
+            url="https://evilinsult.com/generate_insult.php?lang=en&type=json"
+        )
     roast = await response.json()
     await ctx.send(roast["insult"])
 
