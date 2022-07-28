@@ -31,38 +31,41 @@ class chatbot(commands.Cog):
         self.bkey = environ.get("BRAINSHOP_KEY")
         self.http = ClientSession()
 
+    def cog_unload(self):
+        self.client.loop.create_task(self.http.close())
+
     @commands.command()
     async def aichannel(self, ctx: commands.Context, channel: TextChannel):
-        g = GuildSettings.get
-        await GuildSettings.update_chatbot_channel(ctx.guild.id, channel.id)
+        async with session() as s:
+            await s.merge(GuildSettings(guild_id=ctx.guild.id, chatbot_channel=channel.id))
+            await s.commit()
         self.cache[ctx.guild.id] = channel.id
-        await ctx.send("Set ai channel to " + channel.name)
+        await ctx.send("Set AI channel to " + channel.name)
         await channel.send("Hi I am Pog Memer, you can chat with me here")
 
     async def get_ai_channel(self, guild: Guild) -> Optional[int]:
         if guild.id in self.cache:
             return self.cache[guild.id]
-        d = await GuildSettings.get(guild.id)
+        d = (await GuildSettings.get(guild.id))[0]
         if d:
-            self.cache[guild.id] = d
-        return d
+            self.cache[guild.id] = d.chatbot_channel
+        return d.chatbot_channel
 
     @commands.Cog.listener()
     async def on_message(self, message: Message):
         if (
             message.author.id == self.client.user.id
-            or not message.guild
-            or message.channel.id != (await self.get_ai_channel(message.guild))
+            or not message.channel.guild
+            or message.channel.id != (c := await self.get_ai_channel(message.channel.guild))
         ):
             return
-        channel = message.channel
-        if channel.id != (await self.get_ai_channel(message.guild)):
-            return
+        channel: TextChannel = message.channel
         bucket = self.cd_mapping.get_bucket(message)
         retry_after = bucket.update_rate_limit()
         if retry_after:
             return await channel.send("Woah, slow down!")
         try:
+            await channel.trigger_typing()
             response = await self.http.get(
                 f"http://api.brainshop.ai/get?bid=168192&key=kFWvQk6738l0yFTM&uid={message.author.id}&msg={message.content}"
             )

@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Column
+from sqlalchemy import BigInteger, Integer, Column
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.future import select
@@ -12,7 +12,7 @@ session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 class EconomyData(Base):  # type: ignore
     __tablename__ = "economy"
-    id = Column(Integer, autoincrement=True, primary_key=True)
+    id = Column(BigInteger, autoincrement=True, primary_key=True)
     wallet = Column(Integer)
     bank = Column(Integer)
     bank_capacity = Column(Integer)
@@ -47,17 +47,20 @@ class EconomyData(Base):  # type: ignore
 
 class GuildSettings(Base):  # type: ignore
     __tablename__ = "guild_settings"
-    guild_id = Column(Integer, primary_key=True)
-    chatbot_channel = Column(Integer)
+    guild_id = Column(BigInteger, primary_key=True)
+    chatbot_channel = Column(BigInteger)
 
-    async def update_chatbot_channel(self, guild_id: int, channel_id: int):
+    @classmethod
+    async def update_chatbot_channel(cls, guild_id: int, channel_id: int):
         async with session() as s:
-            await self.update(s, guild_id=guild_id, chatbot_channel=channel_id)
+            results = await s.add(cls(guild_id=guild_id, chatbot_channel=channel_id))
+            # await self.update(s, guild_id=guild_id, chatbot_channel=channel_id)
 
     @classmethod
     async def get(cls, guild_id: int):
         query = select(cls).where(cls.guild_id == guild_id)
-        results = await session().execute(query)
+        async with session() as s:
+            results = await s.execute(query)
         result = results.one()
         return result
 
