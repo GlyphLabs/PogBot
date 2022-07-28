@@ -256,6 +256,14 @@ async def help(ctx, type=None):
         embed.add_field(name="nowplaying", value="Shows the current song thats playing")
         embed.add_field(name="queue", value="Shows all the songs in queue")
         embed.add_field(name="clear", value="Clears the queue")
+     elif type == "economy":
+        embed = discord.Embed(colour=discord.Colour.orange())
+        embed.set_author(name="Economy")
+        embed.add_field(name="balance", value="Shows your balance")
+        embed.add_field(name="work", value="Earn coins by working!")
+        embed.add_field(name="rob", value="Rob any user.")
+        embed.add_field(name="dep", value="Deposit your coins to your bank")
+        embed.add_field(name="withdraw", value="Withdraw coins from your bank to your wallet")
         await ctx.author.send(embed=embed)
         await ctx.send("Sent you a list of commands in DMs!")
     else:
