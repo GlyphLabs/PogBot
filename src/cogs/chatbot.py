@@ -36,11 +36,7 @@ class chatbot(commands.Cog):
 
     @commands.command()
     async def aichannel(self, ctx: commands.Context, channel: TextChannel):
-        async with session() as s:
-            await s.merge(
-                GuildSettings(guild_id=ctx.guild.id, chatbot_channel=channel.id)
-            )
-            await s.commit()
+        await GuildSettings.update_chatbot_channel(ctx.guild.id, channel.id)
         self.cache[ctx.guild.id] = channel.id
         await ctx.send("Set AI channel to " + channel.name)
         await channel.send("Hi I am Pog Memer, you can chat with me here")
