@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands, tasks
+from discord.ext.commands import Context
 import os
 import datetime
 import time
@@ -9,9 +10,8 @@ from discord.ext.commands import clean_content
 from cachetools import LRUCache
 import aiohttp
 import operator
-import requests
-import json
 from asyncio import sleep
+from os import environ
 
 devs = [
     536644802595520534,  # thrizzle.#4258
@@ -33,35 +33,12 @@ poglist = [
     "Poggus",
 ]
 bot = commands.Bot(
-    command_prefix=commands.when_mentioned_or("Pog", "Pog ", "pog ", "pog"),
+    command_prefix=commands.when_mentioned_or("."),
     case_insensitive=True,
     intents=discord.Intents.all(),
     owner_ids=devs,
 )
-
-bot.showercache = []
-
 bot.remove_command("help")
-acceptableImageFormats = [
-    ".png",
-    ".jpg",
-    ".jpeg",
-    ".gif",
-    ".gifv",
-    ".webm",
-    ".mp4",
-    "imgur.com",
-]
-memeHistory = LRUCache(100)  # only the most recent memes should be blacklisted
-memeSubreddits = [
-    "BikiniBottomTwitter",
-    "memes",
-    "2meirl4meirl",
-    "deepfriedmemes",
-    "MemeEconomy",
-    "me_irl",
-    "wholesomememes",
-]
 start_time = time.time()
 
 
@@ -88,7 +65,6 @@ async def on_ready():
     await bot.wait_until_ready()
     print("Bot is ready")
     bot.loop.create_task(status())
-    # bot.load_extension("cogs.music")
 
 
 @bot.event
@@ -276,48 +252,6 @@ async def help_error(ctx, error):
         await ctx.send("Um, your DMs are off so I cant help.")
 
 
-# @bot.command()
-# @commands.guild_only()
-# @commands.cooldown(1, 5, commands.BucketType.guild)
-# async def meme(ctx):
-#       async with ctx.typing(): #loading the meme takes a couple moments, this lets the user know the bot is working on it
-#         """Memes from various subreddits (excluding r/me_irl. some don't understand those memes)"""
-#         async with aiohttp.ClientSession() as session:
-#             async with session.get("https://www.reddit.com/r/{0}/hot.json?limit=100".format(random.choice(memeSubreddits))) as response:
-#                 request = await response.json()
-
-#         attempts = 1
-#         while attempts < 5:
-#             if 'error' in request:
-#                 print("failed request {}".format(attempts))
-#                 await asyncio.sleep(2)
-#                 async with aiohttp.ClientSession() as session:
-#                     async with session.get("https://www.reddit.com/r/{0}/hot.json?limit=100".format(random.choice(memeSubreddits))) as response:
-#                         request = await response.json()
-#                 attempts += 1
-#             else:
-#                 index = 0
-
-#                 for index, val in enumerate(request['data']['children']):
-#                     if 'url' in val['data']:
-#                         url = val['data']['url']
-#                         urlLower = url.lower()
-#                         accepted = False
-#                         for j, v, in enumerate(acceptableImageFormats):
-#                             if v in urlLower:
-#                                 accepted = True
-#                         if accepted:
-#                             if url not in memeHistory:
-#                                 memeHistory.append(url)
-#                                 if len(memeHistory) > 63:
-#                                     memeHistory.popleft()
-
-#                                 break
-#                 await ctx.send(memeHistory[len(memeHistory) - 1])
-#                 return
-#         await ctx.send("_{}! ({})_".format(str(request['message']), str(request['error'])))
-
-
 @bot.command()
 @commands.guild_only()
 async def whosplaying(ctx, *, game):
@@ -372,7 +306,7 @@ async def whosplaying(ctx, *, game):
 
 @bot.command()
 @commands.guild_only()
-async def currentgames(ctx):
+async def currentgames(ctx: Context):
     """Shows the most played games right now"""
     guild = ctx.message.guild
     members = guild.members
@@ -697,7 +631,7 @@ async def gay_scanner(ctx, *, user: discord.Member):
 
 @bot.command()
 @commands.guild_only()
-async def ping(ctx):
+async def ping(ctx: Context):
     msg = await ctx.send("`Pinging bot latency...`")
     times = []
     counter = 0
@@ -732,7 +666,7 @@ async def ping(ctx):
 
 @bot.command(aliases=["invite"])
 @commands.guild_only()
-async def links(ctx):
+async def links(ctx: Context):
     embed = discord.Embed(colour=discord.Colour.orange())
     embed.set_author(name="Links")
     embed.add_field(
@@ -766,13 +700,13 @@ async def links(ctx):
 
 @bot.command()
 @commands.guild_only()
-async def buzzdance(ctx):
+async def buzzdance(ctx: Context):
     await ctx.send("https://photos.app.goo.gl/n6w6cYETwCNXuA4w7")
 
 
 @bot.command()
 @commands.guild_only()
-async def botinfo(ctx):
+async def botinfo(ctx: Context):
     embed = discord.Embed(colour=discord.Colour.orange())
     embed.set_author(
         name="Info",
@@ -784,8 +718,6 @@ async def botinfo(ctx):
     embed.add_field(name="Bot Created:", value="May 25, 2021", inline=False)
     await ctx.send(embed=embed)
 
-
-sent_users = []
 
 
 @bot.command(aliases=["user-info"])
@@ -822,7 +754,7 @@ async def userinfo(ctx, member: discord.Member = None):
 
 @bot.command(aliases=["server-info"])
 @commands.guild_only()
-async def serverinfo(ctx):
+async def serverinfo(ctx: Context):
     total_text_channels = len(ctx.guild.text_channels)
     total_voice_channels = len(ctx.guild.voice_channels)
     total_channels = total_text_channels + total_voice_channels
@@ -871,7 +803,7 @@ async def dm_error(ctx, error):
 
 @bot.command()
 @commands.guild_only()
-async def uptime(ctx):
+async def uptime(ctx: Context):
     current_time = time.time()
     difference = int(round(current_time - start_time))
     text = str(datetime.timedelta(seconds=difference))
@@ -907,17 +839,18 @@ async def drunkify(ctx, *, s):
 
 @bot.command()
 @commands.is_owner()
-async def shutdown(ctx):
+async def shutdown(ctx: Context):
     await ctx.bot.logout()
 
 
 @bot.command()
 @commands.guild_only()
-async def roast(ctx):
-    response = requests.get(
+async def roast(ctx: Context):
+    await ctx.trigger_typing()
+    response = await aiohttp.ClientSession().get(
         url="https://evilinsult.com/generate_insult.php?lang=en&type=json"
     )
-    roast = json.loads(response.text)
+    roast = await response.json()
     await ctx.send(roast["insult"])
 
 
@@ -935,6 +868,6 @@ bot.load_extension("jishaku")
 bot.load_extension("cogs.error")
 bot.load_extension("cogs.meme")
 bot.load_extension("cogs.text")
-bot.load_extension("cogs.economy")
+# bot.load_extension("cogs.economy")
 token = os.environ.get("TOKEN")
 bot.run(token)
