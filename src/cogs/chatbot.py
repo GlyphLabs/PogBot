@@ -37,7 +37,9 @@ class chatbot(commands.Cog):
     @commands.command()
     async def aichannel(self, ctx: commands.Context, channel: TextChannel):
         async with session() as s:
-            await s.merge(GuildSettings(guild_id=ctx.guild.id, chatbot_channel=channel.id))
+            await s.merge(
+                GuildSettings(guild_id=ctx.guild.id, chatbot_channel=channel.id)
+            )
             await s.commit()
         self.cache[ctx.guild.id] = channel.id
         await ctx.send("Set AI channel to " + channel.name)
@@ -56,7 +58,8 @@ class chatbot(commands.Cog):
         if (
             message.author.id == self.client.user.id
             or not message.channel.guild
-            or message.channel.id != (c := await self.get_ai_channel(message.channel.guild))
+            or message.channel.id
+            != (c := await self.get_ai_channel(message.channel.guild))
         ):
             return
         channel: TextChannel = message.channel
