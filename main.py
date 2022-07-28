@@ -256,7 +256,7 @@ async def help(ctx, type=None):
         embed.add_field(name="nowplaying", value="Shows the current song thats playing")
         embed.add_field(name="queue", value="Shows all the songs in queue")
         embed.add_field(name="clear", value="Clears the queue")
-     elif type == "economy":
+    elif type == "economy":
         embed = discord.Embed(colour=discord.Colour.orange())
         embed.set_author(name="Economy")
         embed.add_field(name="balance", value="Shows your balance")
