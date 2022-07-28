@@ -55,4 +55,4 @@ utils==1.0.1; python_version >= "3.6"
 werkzeug==2.0.3; python_version >= "3.8" and python_version < "4.0"
 yarl==1.7.2; python_version >= "3.8" and python_version < "4.0" and python_full_version >= "3.5.3"
 youtube-dl==2021.12.17
-pymongo
+pymongo[tls,srv]
