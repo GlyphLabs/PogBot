@@ -11,7 +11,6 @@ from cachetools import LRUCache
 import aiohttp
 import operator
 from asyncio import sleep
-from os import environ
 
 devs = [
     536644802595520534,  # thrizzle.#4258
@@ -60,7 +59,6 @@ async def status():
 
 @bot.event
 async def on_ready():
-    await bot.wait_until_ready()
     print("Bot is ready")
     bot.loop.create_task(status())
 
@@ -747,7 +745,6 @@ async def userinfo(ctx, member: discord.Member = None):
 
     embed.add_field(name="Roles:", value="".join([role.mention for role in roles]))
     embed.add_field(name="Highest Role:", value=member.top_role.mention)
-    print(member.top_role.mention)
     await ctx.send(embed=embed)
 
 
@@ -868,6 +865,6 @@ bot.load_extension("jishaku")
 bot.load_extension("cogs.error")
 bot.load_extension("cogs.meme")
 bot.load_extension("cogs.text")
-# bot.load_extension("cogs.economy")
+bot.load_extension("cogs.economy")
 token = os.environ.get("TOKEN")
 bot.run(token)
