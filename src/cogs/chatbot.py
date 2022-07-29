@@ -1,11 +1,10 @@
 from discord.ext import commands
 from discord import Guild, TextChannel, Message
 from random import choice
-from cachetools import LFUCache
 from os import environ
 from aiohttp import ClientSession
 from typing import Optional
-from db import GuildSettings, session
+from db import GuildSettings
 
 # initiate the object
 
