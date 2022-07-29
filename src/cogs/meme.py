@@ -13,7 +13,7 @@ class Meme(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.memehistory: TTLCache[str, Deque[bytes]] = TTLCache(100, 3600)
-        self.memecache: TTLCache[str, bytes] = TTLCache(100, 3600)
+        self.memecache: TTLCache[str, Deque[bytes]] = TTLCache(100, 3600)
         self.allmemes: Deque[bytes] = deque()
         self.get_more_memes.start()
 
@@ -36,12 +36,10 @@ class Meme(commands.Cog):
         if not self.memecache:
             await ctx.trigger_typing()
         else:
-            memej: dict = unpackb(choice(self.memecache))
-            print("john")
-            print("-------------------------------------------------" + str(memej))
+            memej: dict = unpackb(choice(self.allmemes))
         if sub:
-            if sub in memeHistory and memeHistory[sub]:
-                memej = choice(memeHistory[sub])
+            if sub in self.memecache and self.memecache[sub]:
+                memej = choice(unpackb(self.memecache[sub]))
             else:
                 async with aiohttp.ClientSession() as session:
                     async with session.get(
@@ -51,12 +49,9 @@ class Meme(commands.Cog):
                         if memedata.status != 200:
                             return await ctx.send("Invalid Sub!")
                         memej = choice(memed["memes"])
-                        if sub not in memeHistory:
-                            memeHistory[sub] = []
-                        if memej not in memeHistory[sub]:
-                            memeHistory[sub] += memed["memes"]
-                        print(memej)
-
+                        self.memecache[sub] = deque()
+                        self.memecache[sub]
+                        
         caption = memej["title"]
         memeurl = memej["url"]
         sub = f"r/{memej['subreddit']}"
