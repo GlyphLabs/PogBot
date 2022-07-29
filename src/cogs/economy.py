@@ -2,7 +2,8 @@ from discord.ext.commands import command, cooldown, Context, Cog, BucketType
 from discord import Member, Embed
 from random import choice, randint
 from db import EconomyData
-collection = None
+from math import floor
+
 
 class Economy(Cog):
     def __init__(self, bot):
@@ -12,7 +13,7 @@ class Economy(Cog):
             "Made out like a bandit!",
             "Smooth criminal...",
         )
-        self.jobs = jobs = (
+        self.jobs = (
             "exit scammer",
             "bot dev",
             "president",
@@ -47,11 +48,13 @@ class Economy(Cog):
         worked = randint(0, 1)
         victim: EconomyData = await EconomyData.get(member.id)
         if victim.wallet == 0:
-            return await ctx.reply(f"{member.display_name} doesn't have any money in their wallet!")
+            return await ctx.reply(
+                f"{member.display_name} doesn't have any money in their wallet!"
+            )
         thief: EconomyData = await EconomyData.get(ctx.author.id)
-        hamt = thief.wallet if thief > victim else victim.wallet
+        hamt = thief.wallet if thief.wallet > victim.wallet else victim.wallet
         if worked == 1:
-            robamt = randint(0, hamt / 3)
+            robamt = randint(0, floor(hamt / 3))
             await EconomyData.update_wallet(member.id, victim.wallet - robamt)
             await EconomyData.update_wallet(ctx.author.id, thief.wallet + robamt)
             embed = Embed(
@@ -60,7 +63,7 @@ class Economy(Cog):
             embed.set_author(name=choice(self.crime_msgs))
             await ctx.reply(embed=embed)
         else:
-            robamt = randint(0, hamt / 4)
+            robamt = randint(0, floor(hamt / 4))
             embed = Embed(description=f"The police charge you a {robamt} fine.")
             embed.set_author(name="You were caught!")
             await ctx.reply(embed=embed)
@@ -71,7 +74,7 @@ class Economy(Cog):
         job = choice(self.jobs)
         money = randint(0, 3000)
         jobmsg = f"You worked as a **{job}** and earned **{money} pog coins**"
-        EconomyData.update_wallet(ctx.author.id, money)
+        await EconomyData.update_wallet(ctx.author.id, money)
         await ctx.send(jobmsg)
 
     @command(
@@ -80,31 +83,29 @@ class Economy(Cog):
         description="Deposit some money into your bank account!",
         usage="deposit <money>",
     )
-    @cooldown(1, 600, BucketType.user)
-    async def dep(self, ctx, amt=0):
-        if amt == 0:
-            await ctx.send(
+    @cooldown(1, 10, BucketType.user)
+    async def dep(self, ctx: Context, amt=None):
+        if not amt:
+            return await ctx.send(
                 "You forgot to tell me how much money you wanted to deposit!"
             )
         try:
             amt = int(amt)
         except ValueError:
-            await ctx.send(
-                "You didn't give me a number! How was I supposed to work with that?"
-            )
-        if collection.count_documents({"_id": ctx.author.id}) == 0:
-            meminfo = {"_id": ctx.author.id, "bank": 0, "wallet": 0}
-            collection.insert_one(meminfo)
-        user = collection.find_one({"_id": ctx.author.id})
-        if (user["wallet"]) < amt:
+            if amt.lower() != "all":
+                await ctx.send(
+                    "You didn't give me a number! How was I supposed to work with that?"
+                )
+        if type(amt) == int and amt < 1:
+            return await ctx.send("😳")
+        user = await EconomyData.get(ctx.author.id)
+        if type(amt) == str and amt.lower() == "all":
+            amt = user.wallet
+        if user.wallet < amt:
             await ctx.send("You don't have enough money in your wallet for that!")
         else:
-            wamt = amt - (amt * 2)
-            collection.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": wamt}})
-            collection.update_one({"_id": ctx.author.id}, {"$inc": {"bank": amt}})
-            await ctx.send(
-                f"You just deposited **{amt}** pog coins into your bank account!"
-            )
+            await EconomyData.deposit(ctx.author.id, amt)
+            await ctx.send(f"You just withdrew **{amt}** pog coins from your wallet!")
 
     @command(
         name="Withdraw",
@@ -113,36 +114,39 @@ class Economy(Cog):
         aliases=["with"],
     )
     @cooldown(1, 10, BucketType.user)
-    async def withdraw(self, ctx, amt=0):
-        if amt == 0:
-            await ctx.send(
-                "You forgot to tell me how much money you wanted to deposit!"
+    async def withdraw(self, ctx: Context, amt=None):
+        if not amt:
+            return await ctx.send(
+                "You forgot to tell me how much money you wanted to withdraw!"
             )
         try:
             amt = int(amt)
         except ValueError:
-            await ctx.send(
-                "You didn't give me a number! How was I supposed to work with that?"
-            )
-        if collection.count_documents({"_id": ctx.author.id}) == 0:
-            meminfo = {"_id": ctx.author.id, "bank": 0, "wallet": 0}
-            collection.insert_one(meminfo)
-        user = collection.find_one({"_id": ctx.author.id})
-        if (user["bank"]) < amt:
-            await ctx.send("You don't have enough money in the bank for that!")
+            if amt.lower() != "all":
+                await ctx.send(
+                    "You didn't give me a number! How was I supposed to work with that?"
+                )
+        if type(amt) == int and amt < 1:
+            return await ctx.send("😳")
+
+        user = await EconomyData.get(ctx.author.id)
+        if type(amt) == str and amt.lower() == "all":
+            amt = user.bank
+
+        if user.bank < amt:
+            await ctx.send("You don't have enough money in your bank account for that!")
         else:
-            wamt = amt - (amt * 2)
-            collection.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": amt}})
-            collection.update_one({"_id": ctx.author.id}, {"$inc": {"bank": wamt}})
+            await EconomyData.withdraw(ctx.author.id, amt)
+
             await ctx.send(
                 f"You just withdrew **{amt}** pog coins from your bank account!"
             )
 
     @command(name="Beg", description="Beg strangers for money!", usage="beg")
     @cooldown(1, 30, BucketType.user)
-    async def beg(self, ctx):
+    async def beg(self, ctx: Context):
         c = randint(0, 1)
-        people = [
+        people = (
             "Joe Mama",
             "Johnathan McReynolds",
             "Leonardo DiCaprio",
@@ -151,25 +155,19 @@ class Economy(Cog):
             "Tiko",
             "peepo",
             "pepe",
-        ]
-        messages = [
+        )
+        messages = (
             "you stanky",
             "no u lmao",
             "what you don't have a job?",
             "I don't speak poor",
-        ]
+        )
         donor = choice(people)
         if c == 1:
-            guild = ctx.guild
-            guild = guild.id
-            ginfo = {"_id": ctx.author.id}
-            if collection.count_documents(ginfo) == 0:
-                meminfo = {"_id": ctx.author.id, "bank": 0, "wallet": 0}
-                collection.insert_one(meminfo)
             money = randint(34, 120)
             msg = f"**{donor}** gave {money} pog coins to {ctx.author.name}!"
-            user = collection.find_one({"_id": ctx.author.id})
-            collection.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": money}})
+            user = await EconomyData.get(ctx.author.id)
+            await EconomyData.update_wallet(ctx.author.id, user.wallet + money)
             await ctx.send(msg)
         else:
             m = choice(messages)
@@ -184,6 +182,7 @@ class Economy(Cog):
     async def balance(self, ctx: Context, member: Member = None):
         if not member:
             member = ctx.author
+        await ctx.trigger_typing()
         user: EconomyData = await EconomyData.get(member.id)
         embed = Embed(title=f"{member.name}'s balance", color=ctx.author.color)
         embed.set_thumbnail(url=member.avatar_url)
