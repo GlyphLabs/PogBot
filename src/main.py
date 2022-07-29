@@ -32,7 +32,7 @@ poglist = [
     "Poggus",
 ]
 bot = commands.Bot(
-    command_prefix=commands.when_mentioned_or("."),
+    command_prefix=commands.when_mentioned_or("pog ", "pog"),
     case_insensitive=True,
     intents=discord.Intents.all(),
     owner_ids=devs,
