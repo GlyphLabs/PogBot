@@ -108,8 +108,9 @@ class GuildSettings(Base):  # type: ignore
         query = select(cls).where(cls.guild_id == guild_id)
         async with session() as s:
             results = await s.execute(query)
-        result = results.one()
-        return result
+            if not (result := results.first()):
+                return None
+        return result[0]
 
     def __repr__(self):
         return f"<GuildSettings(guild_id={self.guild_id})>"

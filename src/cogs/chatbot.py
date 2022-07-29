@@ -44,7 +44,7 @@ class chatbot(commands.Cog):
     async def get_ai_channel(self, guild: Guild) -> Optional[int]:
         if guild.id in self.cache:
             return self.cache[guild.id]
-        d = (await GuildSettings.get(guild.id))[0]
+        d = (await GuildSettings.get(guild.id))
         if d:
             self.cache[guild.id] = d.chatbot_channel
         return d.chatbot_channel
