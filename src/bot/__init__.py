@@ -1,4 +1,4 @@
-from discord.ext.commands import Bot, when_mentioned_or
+from discord.ext.commands import Bot, when_mentioned_or, Context
 from discord import Message, Intents
 from asyncio import sleep
 from discord import utils
@@ -6,6 +6,7 @@ from typing import List
 from helpcmd import PogBotHelp
 from time import time
 from os import environ
+
 
 class PogBot(Bot):
     def __init__(self, extensions: List[str] = None):
@@ -38,6 +39,11 @@ class PogBot(Bot):
         )
         self.help_command = PogBotHelp()
 
+    async def check(self, ctx: Context):
+        if ctx.author.bot or not ctx.guild:
+            return False
+        return True
+
     async def on_message(self, message: Message) -> None:
         if message.author.bot:
             return
@@ -55,10 +61,14 @@ class PogBot(Bot):
                 "https://tenor.com/view/i-dont-have-friends-i-have-family-theyre-not-my-friends-theyre-my-family-more-than-friends-gif-16061717"
             )
 
-    def load_extension(self, name):
+    def load_extension(self, name: str):
         super().load_extension(f"cogs.{name}")
 
-    def unload_extension(self, name):
+    def reload_extension(self, name: str):
+        self.unload_extension(name)
+        self.load_extension(name)
+
+    def unload_extension(self, name: str):
         super().unload_extension(f"cogs.{name}")
 
     def run(self):

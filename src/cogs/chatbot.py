@@ -19,6 +19,7 @@ dunno = (  # List of error responses for ai
     "What?",
 )
 
+
 class chatbot(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client

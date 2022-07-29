@@ -42,7 +42,7 @@ class Economy(Cog):
             "A̵̱͇̱͓͓̟͈̼̫͎͓̋̓̀̎̉̐̀̂̇̄H̷̰̼̭͇͍̭͕̥͈̥͆͛̋H̸̨̧̧̧̛͖̟̣͖̙͎̩͔̬̞̽̅͊̄͆̂͛̿͋̌̉̇H̷̜̞͖̮̭̰̠͙͎̖̟͚̜̤͂̕͘͜",
         )
 
-    @command(name="Rob", description="Rob a user!")
+    @command(name="rob", description="Rob a user!")
     @cooldown(1, 120, BucketType.user)
     async def rob(self, ctx: Context, *, member: Member):
         worked = randint(0, 1)
@@ -68,7 +68,7 @@ class Economy(Cog):
             embed.set_author(name="You were caught!")
             await ctx.reply(embed=embed)
 
-    @command(name="Work", description="Work for some amadola!", usage="work")
+    @command(name="work", description="Work for some amadola!", usage="work")
     @cooldown(1, 360, BucketType.user)
     async def work(self, ctx: Context):
         job = choice(self.jobs)
@@ -79,12 +79,12 @@ class Economy(Cog):
 
     @command(
         aliases=["dep", "bank"],
-        name="Deposit",
+        name="deposit",
         description="Deposit some money into your bank account!",
         usage="deposit <money>",
     )
     @cooldown(1, 10, BucketType.user)
-    async def dep(self, ctx: Context, amt=None):
+    async def deposit(self, ctx: Context, amt=None):
         if not amt:
             return await ctx.send(
                 "You forgot to tell me how much money you wanted to deposit!"

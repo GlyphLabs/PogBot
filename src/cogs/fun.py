@@ -1,4 +1,11 @@
-from discord.ext.commands import Cog, command, guild_only, is_owner, Context, cooldown, BucketType
+from discord.ext.commands import (
+    Cog,
+    command,
+    is_owner,
+    Context,
+    cooldown,
+    BucketType,
+)
 from operator import itemgetter
 from discord import Colour, Embed, Member, HTTPException, MemberNotFound
 from random import choice, randint
@@ -6,16 +13,18 @@ from time import time, perf_counter
 from datetime import datetime, timedelta
 from aiohttp import ClientSession
 
+
 class Fun(Cog):
-    def __init_(self, bot): self.bot = bot 
+    def __init_(self, bot):
+        self.bot = bot
 
     @command()
-    @guild_only()
     async def whosplaying(self, ctx: Context, *, game):
         """Shows who's playing a specific game"""
         if len(game) <= 1:
             await ctx.send(
-                "```The game should be at least 2 characters long...```", delete_after=5.0
+                "```The game should be at least 2 characters long...```",
+                delete_after=5.0,
             )
             return
 
@@ -60,9 +69,7 @@ class Fun(Cog):
             em.set_author(name=f"Who's playing {game}? {showing}")
             await ctx.send(embed=em)
 
-
     @command()
-    @guild_only()
     async def currentgames(self, ctx: Context):
         """Shows the most played games right now"""
         guild = ctx.message.guild
@@ -107,9 +114,7 @@ class Fun(Cog):
             await ctx.send(embed=em)
         return
 
-
     @command()
-    @guild_only()
     async def combine(self, ctx: Context, name1: str, name2: str):
         name1letters = name1[: round(len(name1) / 2)]
         name2letters = name2[round(len(name2) / 2) :]
@@ -118,9 +123,7 @@ class Fun(Cog):
         emb.set_author(name=f"{name1} + {name2}")
         await ctx.send(embed=emb)
 
-
     @command()
-    @guild_only()
     async def ship(self, ctx: Context, name1: str, name2: str):
         shipnumber = randint(0, 100)
         if 0 <= shipnumber <= 10:
@@ -261,9 +264,7 @@ class Fun(Cog):
         emb.add_field(name="Status:", value=(status), inline=False)
         await ctx.send(embed=emb)
 
-
     @command(aliases=["8ball"])
-    @guild_only()
     async def eightball(self, ctx: Context, *, _ballInput: str):
         """extra generic just the way you like it"""
         choiceType = choice(["(Affirmative)", "(Non-committal)", "(Negative)"])
@@ -333,9 +334,7 @@ class Fun(Cog):
         )
         await ctx.send(embed=emb)
 
-
     @command(aliases=["gay"])
-    @guild_only()
     async def gay_scanner(self, ctx: Context, *, user: Member):
         """very mature command yes haha"""
         if not user:
@@ -386,9 +385,7 @@ class Fun(Cog):
         emb.set_author(name="Gay-Scanner™")
         await ctx.send(embed=emb)
 
-
     @command()
-    @guild_only()
     async def ping(self, ctx: Context):
         msg = await ctx.send("`Pinging bot latency...`")
         times = []
@@ -422,9 +419,7 @@ class Fun(Cog):
         )
         return
 
-
     @command(aliases=["invite"])
-    @guild_only()
     async def links(self, ctx: Context):
         embed = Embed(colour=Colour.orange())
         embed.set_author(name="Links")
@@ -456,30 +451,26 @@ class Fun(Cog):
         await ctx.author.send(embed=embed)
         await ctx.send("I sent you them in dms because I dont want to advertise.")
 
-
     @command()
-    @guild_only()
     async def buzzdance(self, ctx: Context):
         await ctx.send("https://photos.app.goo.gl/n6w6cYETwCNXuA4w7")
 
-
     @command()
-    @guild_only()
     async def botinfo(self, ctx: Context):
         embed = Embed(colour=Colour.orange())
         embed.set_author(
             name="Info",
             icon_url="https://media.discordapp.net/attachments/846429112608620620/846471414076669982/discord-avatar-128-BSK73.gif",
         )
-        embed.add_field(name="Owner:", value="Paragonii#6942\nSquook#0001", inline=False)
+        embed.add_field(
+            name="Owner:", value="Paragonii#6942\nSquook#0001", inline=False
+        )
         embed.add_field(name="Language:", value="Python", inline=False)
         embed.add_field(name="Prefix:", value="pog ", inline=False)
         embed.add_field(name="Bot Created:", value="May 25, 2021", inline=False)
         await ctx.send(embed=embed)
 
-
     @command(aliases=["user-info"])
-    @guild_only()
     async def userinfo(self, ctx: Context, member: Member = None):
         if not member:  # if member is no mentioned
             member = ctx.message.author  # set member as the author
@@ -508,17 +499,13 @@ class Fun(Cog):
         embed.add_field(name="Highest Role:", value=member.top_role.mention)
         await ctx.send(embed=embed)
 
-
     @command(aliases=["server-info"])
-    @guild_only()
     async def serverinfo(self, ctx: Context):
         total_text_channels = len(ctx.guild.text_channels)
         total_voice_channels = len(ctx.guild.voice_channels)
         total_channels = total_text_channels + total_voice_channels
 
-        emb = Embed(
-            color=Colour.blue(), timestamp=datetime.utcnow()
-        )
+        emb = Embed(color=Colour.blue(), timestamp=datetime.utcnow())
         emb.set_author(name=f"Server Info - {ctx.guild.name}")
 
         emb.add_field(name="Server Name:", value=ctx.guild.name, inline=False)
@@ -539,7 +526,6 @@ class Fun(Cog):
         emb.set_thumbnail(url=self.bot.user.avatar_url)
         await ctx.send(embed=emb)
 
-
     @command()
     @cooldown(1, 30, BucketType.user)
     async def dm(
@@ -551,15 +537,12 @@ class Fun(Cog):
         embed.add_field(name="Message:", value=content, inline=False)
         await channel.send(embed=embed)
 
-
     @dm.error
     async def dm_error(self, ctx: Context, error):
         if isinstance(error, MemberNotFound):
             await ctx.send("User not found. Ik its sad.")
 
-
     @command()
-    @guild_only()
     async def uptime(self, ctx: Context):
         current_time = time()
         difference = int(round(current_time - self.bot.start_time))
@@ -572,9 +555,7 @@ class Fun(Cog):
         except HTTPException:
             await ctx.send("Current uptime: " + text)
 
-
     @command()
-    @guild_only()
     async def drunkify(self, ctx: Context, *, s: str):
         lst = (str.upper, str.lower)
         newText = "".join(choice(lst)(c) for c in s)
@@ -591,15 +572,12 @@ class Fun(Cog):
                     f"**{ctx.author.mention} There was a problem, and I could not send the output. It may be too large or malformed**"
                 )
 
-
     @command()
     @is_owner()
     async def shutdown(self, ctx: Context):
         await ctx.bot.logout()
 
-
     @command()
-    @guild_only()
     async def roast(self, ctx: Context):
         await ctx.trigger_typing()
         async with ClientSession() as session:

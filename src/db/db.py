@@ -13,6 +13,7 @@ Base = declarative_base()
 engine = create_async_engine(url=environ["DATABASE_URL"])
 session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
+
 class MsgPackMixin:
     def serialize(self):
         return packb({c.name: getattr(self, c.name) for c in self.__table__.columns})
@@ -20,6 +21,7 @@ class MsgPackMixin:
     @classmethod
     def from_data(cls, data):
         return cls(**unpackb(data))
+
 
 class EconomyData(Base, MsgPackMixin):  # type: ignore
     __tablename__ = "economy"
@@ -50,7 +52,7 @@ class EconomyData(Base, MsgPackMixin):  # type: ignore
                 await s.commit()
                 cls.cache[id] = d.serialize()
                 return d
-            
+
             cls.cache[id] = result[0].serialize()
 
         return result[0]
@@ -112,7 +114,7 @@ class GuildSettings(Base, MsgPackMixin):  # type: ignore
 
     @classmethod
     async def get(cls, guild_id: int) -> Optional[GuildSettings]:
-        if (data := cls.cache.get(guild_id)):
+        if data := cls.cache.get(guild_id):
             return cls.from_data(data)
         query = select(cls).where(cls.guild_id == guild_id)
         async with session() as s:
