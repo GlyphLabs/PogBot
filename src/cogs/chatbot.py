@@ -66,7 +66,7 @@ class chatbot(commands.Cog):
         try:
             await channel.trigger_typing()
             response = await self.http.get(
-                f"http://api.brainshop.ai/get?bid=168192&key=kFWvQk6738l0yFTM&uid={message.author.id}&msg={message.content}"
+                f"http://api.brainshop.ai/get?bid={self.bid}&key={self.bkey}&uid={message.author.id}&msg={message.content}"
             )
             res = await response.json()
             await message.reply(res["cnt"])
@@ -81,7 +81,7 @@ class chatbot(commands.Cog):
             return await ctx.send("Woah, slow down!")
         try:
             response = await self.http.get(
-                f"http://api.brainshop.ai/get?bid=168192&key=kFWvQk6738l0yFTM&uid={message.author.id}&msg={message.content}"
+                f"http://api.brainshop.ai/get?bid={self.bid}&key={self.bkey}&uid={message.author.id}&msg={message.content}"
             )
             res = await response.json()
             await message.reply(res["cnt"])
