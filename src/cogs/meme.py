@@ -35,12 +35,8 @@ class Meme(commands.Cog):
         else:
             if isinstance(self.memecache, dict):
                 memej = random.choice(self.memecache["memes"])
-                print("sfdasdfasfadfdsa")
-                print("-------------------------------------------------" + str(memej))
             else:
                 memej = random.choice(self.memecache)
-                print("john")
-                print("-------------------------------------------------" + str(memej))
         if sub:
             if sub in memeHistory and memeHistory[sub]:
                 memej = random.choice(memeHistory[sub])
@@ -57,7 +53,6 @@ class Meme(commands.Cog):
                             memeHistory[sub] = []
                         if memej not in memeHistory[sub]:
                             memeHistory[sub] += memed["memes"]
-                        print(memej)
 
         caption = memej["title"]
         memeurl = memej["url"]
