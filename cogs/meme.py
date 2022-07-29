@@ -1,17 +1,20 @@
 from discord.ext import commands, tasks
 import aiohttp
 import discord
-from cachetools import LRUCache
-import random
-import asyncio
-
-memeHistory = LRUCache(100)
+from cachetools import TTLCache
+from random import choice
+from asyncio import sleep
+from collections import deque
+from typing import Deque
+from ormsgpack import packb, unpackb
 
 
 class Meme(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.memecache = []
+        self.memehistory: TTLCache[str, Deque[bytes]] = TTLCache(100, 3600)
+        self.memecache: TTLCache[str, bytes] = TTLCache(100, 3600)
+        self.allmemes: Deque[bytes] = deque()
         self.get_more_memes.start()
 
     def remove_duplicates(self, l: list):
@@ -33,17 +36,12 @@ class Meme(commands.Cog):
         if not self.memecache:
             await ctx.trigger_typing()
         else:
-            if isinstance(self.memecache, dict):
-                memej = random.choice(self.memecache["memes"])
-                print("sfdasdfasfadfdsa")
-                print("-------------------------------------------------" + str(memej))
-            else:
-                memej = random.choice(self.memecache)
-                print("john")
-                print("-------------------------------------------------" + str(memej))
+            memej: dict = unpackb(choice(self.memecache))
+            print("john")
+            print("-------------------------------------------------" + str(memej))
         if sub:
             if sub in memeHistory and memeHistory[sub]:
-                memej = random.choice(memeHistory[sub])
+                memej = choice(memeHistory[sub])
             else:
                 async with aiohttp.ClientSession() as session:
                     async with session.get(
@@ -52,7 +50,7 @@ class Meme(commands.Cog):
                         memed = await memedata.json()
                         if memedata.status != 200:
                             return await ctx.send("Invalid Sub!")
-                        memej = random.choice(memed["memes"])
+                        memej = choice(memed["memes"])
                         if sub not in memeHistory:
                             memeHistory[sub] = []
                         if memej not in memeHistory[sub]:
@@ -77,8 +75,8 @@ class Meme(commands.Cog):
     @commands.guild_only()
     @commands.cooldown(1, 2, commands.BucketType.user)
     async def showerthought(self, ctx):
-        if ctx.guild.id not in memeHistory:
-            memeHistory[ctx.guild.id] = []
+        if ctx.guild.id not in self.memecache:
+            self.memecache[ctx.guild.id] = []
         if not self.bot.showercache:
             await ctx.trigger_typing()
             async with aiohttp.ClientSession() as session:
@@ -91,7 +89,7 @@ class Meme(commands.Cog):
         while attempts < 5:
             if "error" in self.bot.showercache:
                 print("failed request {}".format(attempts))
-                await asyncio.sleep(2)
+                await sleep(2)
                 async with aiohttp.ClientSession() as session:
                     async with session.get(
                         "https://www.reddit.com/r/showerthoughts/top.json?limit=100"
@@ -119,15 +117,15 @@ class Meme(commands.Cog):
                                 "comments": val["data"]["num_comments"],
                                 "url": val["data"]["url"],
                             }
-                            if d not in memeHistory[ctx.guild.id]:
-                                memeHistory[ctx.guild.id].append(d)
-                                if len(memeHistory[ctx.guild.id]) > 63:
-                                    memeHistory[ctx.guild.id].pop(
-                                        len(memeHistory[ctx.guild.id] - 1)
+                            if d not in self.memecache[ctx.guild.id]:
+                                self.memecache[ctx.guild.id].append(d)
+                                if len(self.memecache[ctx.guild.id]) > 63:
+                                    self.memecache[ctx.guild.id].pop(
+                                        len(self.memecache[ctx.guild.id] - 1)
                                     )
 
                                 break
-                st = memeHistory[ctx.guild.id][len(memeHistory[ctx.guild.id]) - 1]
+                st = self.memecache[ctx.guild.id][len(self.memecache[ctx.guild.id]) - 1]
                 embed = discord.Embed(
                     description=str(st["title"]), color=discord.Color.random()
                 )
@@ -173,15 +171,21 @@ class Meme(commands.Cog):
             data = await d.json()
             memes = [i for i in data["memes"] if not i["nsfw"]]
             for meme in memes:
-                if meme["subreddit"] not in memeHistory:
-                    memeHistory[meme["subreddit"]] = []
-                memeHistory[meme["subreddit"]].append(meme)
-            self.memecache = self.remove_duplicates(self.memecache + memes)
+                if meme["subreddit"] not in self.memecache:
+                    self.memecache[meme["subreddit"]] = deque(maxlen=100)
+                self.memecache[meme["subreddit"]].appendleft(packb({
+                    "title": meme["title"],
+                    "author": meme["author"],
+                    "subreddit": meme["subreddit"],
+                    "postLlink": meme["postLink"],
+                    "ups": meme["ups"],
+                    "url": meme["url"],
+                }))
+            self.allmemes = self.remove_duplicates([i for i in self.allmemes] + memes)
 
     @tasks.loop(hours=24)
     async def reload_memes(self):
-        for i in memeHistory:
-            memeHistory[i] = []
+        self.memecache.clear()
         self.memecache = []
         await self.get_more_memes()
         print("Reloaded Meme Cache")
