@@ -7,6 +7,7 @@ from sqlalchemy import BigInteger, Integer, Column
 from os import environ
 from cachetools import TTLCache
 from ormsgpack import packb, unpackb
+from typing import Optional
 
 Base = declarative_base()
 engine = create_async_engine(url=environ["DATABASE_URL"])
@@ -26,7 +27,7 @@ class EconomyData(Base, MsgPackMixin):  # type: ignore
     wallet = Column(Integer, nullable=False, default=0)
     bank = Column(Integer, nullable=False, default=0)
     bank_capacity = Column(Integer, nullable=False, default=0)
-    cache: TTLCache = TTLCache(maxsize=100, ttl=60)
+    cache: TTLCache[int, bytes] = TTLCache(maxsize=100, ttl=60)
 
     @classmethod
     async def update_wallet(cls, id: int, wallet_amount: int) -> None:
@@ -92,24 +93,33 @@ class EconomyData(Base, MsgPackMixin):  # type: ignore
         return f"<EconomyData(id={self.id})>"
 
 
-class GuildSettings(Base):  # type: ignore
+class GuildSettings(Base, MsgPackMixin):  # type: ignore
     __tablename__ = "guild_settings"
     guild_id = Column(BigInteger, primary_key=True)
     chatbot_channel = Column(BigInteger)
+    cache: TTLCache[int, bytes] = TTLCache(maxsize=100, ttl=60)
 
     @classmethod
     async def update_chatbot_channel(cls, guild_id: int, channel_id: int):
+        g_settings = await cls.get(guild_id)
         async with session() as s:
-            await s.merge(GuildSettings(guild_id=guild_id, chatbot_channel=channel_id))
-            await s.commit()
+            if not g_settings:
+                s.add(GuildSettings(guild_id=guild_id, chatbot_channel=channel_id))
+                await s.commit()
+            else:
+                g_settings.chatbot_channel = channel_id
+                await s.commit()
 
     @classmethod
-    async def get(cls, guild_id: int):
+    async def get(cls, guild_id: int) -> Optional[GuildSettings]:
+        if (data := cls.cache.get(guild_id)):
+            return cls.from_data(data)
         query = select(cls).where(cls.guild_id == guild_id)
         async with session() as s:
             results = await s.execute(query)
             if not (result := results.first()):
                 return None
+            cls.cache[guild_id] = result[0].serialize()
         return result[0]
 
     def __repr__(self):

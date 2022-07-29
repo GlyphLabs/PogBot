@@ -9,7 +9,7 @@ from db import GuildSettings, session
 
 # initiate the object
 
-dunno = [  # List of error responses for ai
+dunno = (  # List of error responses for ai
     "IDK.",
     "I don't really know.",
     "Could you rephrase that?",
@@ -17,8 +17,7 @@ dunno = [  # List of error responses for ai
     "Say that again?",
     "Huh?",
     "What?",
-]
-
+)
 
 class chatbot(commands.Cog):
     def __init__(self, client: commands.Bot):
@@ -26,7 +25,6 @@ class chatbot(commands.Cog):
         self.cd_mapping = commands.CooldownMapping.from_cooldown(
             4, 10, commands.BucketType.member
         )
-        self.cache: LFUCache[int, int] = LFUCache(100)
         self.bid = environ.get("BRAINSHOP_ID")
         self.bkey = environ.get("BRAINSHOP_KEY")
         self.http = ClientSession()
@@ -37,17 +35,14 @@ class chatbot(commands.Cog):
     @commands.command()
     async def aichannel(self, ctx: commands.Context, channel: TextChannel):
         await GuildSettings.update_chatbot_channel(ctx.guild.id, channel.id)
-        self.cache[ctx.guild.id] = channel.id
         await ctx.send("Set AI channel to " + channel.name)
         await channel.send("Hi I am Pog Memer, you can chat with me here")
 
     async def get_ai_channel(self, guild: Guild) -> Optional[int]:
-        if guild.id in self.cache:
-            return self.cache[guild.id]
-        d = (await GuildSettings.get(guild.id))
+        d = await GuildSettings.get(guild.id)
         if d:
-            self.cache[guild.id] = d.chatbot_channel
-        return d.chatbot_channel
+            return d.chatbot_channel
+        return None
 
     @commands.Cog.listener()
     async def on_message(self, message: Message):
