@@ -25,10 +25,10 @@ class Meme(commands.Cog):
         return final_list
 
     @commands.command(
-        name="Meme",
-        description="Returns a random meme!",
+        name="meme",
+        description="Returns a random meme from reddit!",
         aliases=["memz"],
-        usage="meme",
+        usage="meme [subreddit]",
     )
     @commands.cooldown(1, 2, commands.BucketType.guild)
     @commands.guild_only()
@@ -66,7 +66,7 @@ class Meme(commands.Cog):
         embed.set_image(url=memeurl)
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(description="Returns a random showerthought from reddit!", usage="showerthought")
     @commands.guild_only()
     @commands.cooldown(1, 2, commands.BucketType.user)
     async def showerthought(self, ctx):
@@ -138,7 +138,7 @@ class Meme(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.cooldown(1, 2, commands.BucketType.user)
-    async def dankmemes(self, ctx):
+    async def dankmeme(self, ctx):
         await self.meme(ctx, "dankmemes")
 
     @commands.command()
@@ -153,7 +153,7 @@ class Meme(commands.Cog):
     async def me_irl(self, ctx):
         await self.meme(ctx, "me_irl")
 
-    @commands.command()
+    @commands.command(aliases=["codememe"])
     @commands.guild_only()
     @commands.cooldown(1, 2, commands.BucketType.user)
     async def programmerhumor(self, ctx):
