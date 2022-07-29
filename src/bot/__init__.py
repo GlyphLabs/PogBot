@@ -11,7 +11,7 @@ from os import environ
 class PogBot(Bot):
     def __init__(self, extensions: List[str] = None):
         super().__init__(
-            command_prefix=when_mentioned_or("."),
+            command_prefix=when_mentioned_or("pog", "pog "),
             case_insensitive=True,
             intents=Intents.all(),
             owner_ids=(
