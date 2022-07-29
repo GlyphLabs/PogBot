@@ -6,7 +6,6 @@ class TextManipulation(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    @commands.guild_only()
     async def reverse(self, ctx, *, s: commands.clean_content):
         result = await commands.clean_content().convert(ctx, s[::-1])
         if len(result) <= 350:
@@ -23,7 +22,6 @@ class TextManipulation(commands.Cog):
                 )
 
     @commands.command()
-    @commands.guild_only()
     async def texttobinary(self, ctx, *, s):
         try:
             cleanS = await commands.clean_content().convert(
@@ -47,7 +45,6 @@ class TextManipulation(commands.Cog):
                 )
 
     @commands.command()
-    @commands.guild_only()
     async def binarytotext(self, ctx, *, s):
         try:
             cleanS = await commands.clean_content().convert(
@@ -77,7 +74,6 @@ class TextManipulation(commands.Cog):
             )
 
     @commands.command(aliases=["e"])
-    @commands.guild_only()
     async def encrypt(self, ctx, *, s):
         a = ""
         try:
@@ -102,7 +98,6 @@ class TextManipulation(commands.Cog):
                 )
 
     @commands.command(aliases=["d"])
-    @commands.guild_only()
     async def decrypt(self, ctx, *, s):
         a = ""
         try:
