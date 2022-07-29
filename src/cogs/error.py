@@ -1,8 +1,8 @@
 from discord.ext import commands
-
-import math
+from discord import HTTPException
 import sys
-import traceback
+from traceback import print_exception
+from humanize import naturaldelta
 
 
 class Error(commands.Cog):
@@ -32,7 +32,7 @@ class Error(commands.Cog):
                 return await ctx.author.send(
                     f"**:no_entry: `{ctx.command}` can not be used in Private Messages.**"
                 )
-            except:
+            except HTTPException:
                 pass
         elif isinstance(error, commands.BadArgument):
             if ctx.command.qualified_name == "tag list":
@@ -45,7 +45,7 @@ class Error(commands.Cog):
             )
         elif isinstance(error, commands.CommandOnCooldown):
             return await ctx.send(
-                f"**:no_entry: Woah there, that command is on a cooldown for {math.ceil(error.retry_after)} seconds**"
+                f"**:no_entry: Woah there, that command is on a cooldown for {naturaldelta(error.retry_after)}!**"
             )
         elif isinstance(error, commands.CheckFailure) or isinstance(
             error, commands.MissingPermissions
@@ -58,9 +58,11 @@ class Error(commands.Cog):
                 f"**:no_entry: not pog! :((\ni made an oopsie: \\\\ \n  {error}**"
             )
         print("Ignoring exception in command {}:".format(ctx.command), file=sys.stderr)
-        traceback.print_exception(
+        print("="*25)
+        print_exception(
             type(error), error, error.__traceback__, file=sys.stderr
         )
+        print("="*25)
 
 
 def setup(bot):
