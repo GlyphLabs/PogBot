@@ -41,14 +41,14 @@ class PogBot(Bot):
     async def on_message(self, message: Message) -> None:
         if message.author.bot:
             return
-        await self.bot.process_commands(message)
-        for i in [c.name.lower() for c in self.bot.commands]:
+        await self.process_commands(message)
+        for i in [c.name.lower() for c in self.commands]:
             if message.content.lower() in [f"pog{i}", f"pog {i}"]:
                 return
         for word in message.content.lower().split(" "):
             if word in self.poglist:
                 await sleep(1)
-                custom_emoji = utils.get(self.bot.emojis, name="POG")
+                custom_emoji = utils.get(self.emojis, name="POG")
                 await message.add_reaction(custom_emoji)
         if message.content == "family":
             await message.channel.send(
@@ -63,6 +63,7 @@ class PogBot(Bot):
 
     def run(self):
         token = environ.get("TOKEN")
+        super().load_extension("jishaku")
         for ext in self.ext:
             self.load_extension(ext)
         self.start_time = time()
