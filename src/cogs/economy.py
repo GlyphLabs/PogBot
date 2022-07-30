@@ -108,7 +108,7 @@ class Economy(Cog):
             await ctx.send(f"You just withdrew **{amt}** pog coins from your wallet!")
 
     @command(
-        name="Withdraw",
+        name="withdraw",
         description="Withdraw pog coins from your bank account!",
         usage="withdraw <number>",
         aliases=["with"],
@@ -142,7 +142,7 @@ class Economy(Cog):
                 f"You just withdrew **{amt}** pog coins from your bank account!"
             )
 
-    @command(name="Beg", description="Beg strangers for money!", usage="beg")
+    @command(name="beg", description="Beg strangers for money!", usage="beg")
     @cooldown(1, 30, BucketType.user)
     async def beg(self, ctx: Context):
         c = randint(0, 1)
@@ -174,7 +174,7 @@ class Economy(Cog):
             await ctx.send(f"{donor}: {m}")
 
     @command(
-        name="Balance",
+        name="balance",
         description="Check your balance!",
         usage="balance [user]",
         aliases=["bal", "money", "cash"],
