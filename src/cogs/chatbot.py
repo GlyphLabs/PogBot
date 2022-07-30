@@ -48,12 +48,12 @@ class chatbot(commands.Cog):
     async def on_message(self, message: Message):
         if (
             message.author.id == self.client.user.id
-            or not message.channel.guild
+            or not message.guild
             or message.channel.id
-            != (c := await self.get_ai_channel(message.channel.guild))
+            != (c := await self.get_ai_channel(message.guild))
         ):
             return
-        channel: TextChannel = message.channel
+        channel = message.channel
         bucket = self.cd_mapping.get_bucket(message)
         retry_after = bucket.update_rate_limit()
         if retry_after:
