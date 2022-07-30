@@ -4,6 +4,7 @@ from discord.utils import maybe_coroutine
 from discord import Embed, Colour
 from .buttons import HelpButtons
 
+
 class PogBotHelp(HelpCommand):
     def get_command_signature(self, command):
         return f"{self.context.clean_prefix}{command.qualified_name}"
@@ -14,7 +15,9 @@ class PogBotHelp(HelpCommand):
             filtered = await self.filter_commands(commands, sort=True)
             command_signatures = [self.get_command_signature(c) for c in filtered]
             if command_signatures:
-                cog_name = getattr(cog, "qualified_name", "No Category").replace("_", " ")
+                cog_name = getattr(cog, "qualified_name", "No Category").replace(
+                    "_", " "
+                )
                 embed.add_field(
                     name=cog_name.capitalize(),
                     value="`" + "`, `".join(command_signatures) + "`",
