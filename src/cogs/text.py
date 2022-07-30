@@ -4,10 +4,9 @@ from discord.ext.bridge.core import bridge_command
 from bot import PogBot
 
 
-class TextManipulation(commands.Cog):
+class Text(commands.Cog):
     def __init__(self, bot: PogBot):
         self.bot = bot
-        self.qualified_name = "Text"
 
     @bridge_command()
     async def reverse(self, ctx, *, s: commands.clean_content):
@@ -127,4 +126,4 @@ class TextManipulation(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(TextManipulation(bot))
+    bot.add_cog(Text(bot))

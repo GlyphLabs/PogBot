@@ -45,6 +45,9 @@ class PogBot(Bot):
             return False
         return True
 
+    def get_cog(self, name: str):
+        return {n.lower(): cog for n, cog in self.cogs.items()}.get(name.lower())
+
     async def on_message(self, message: Message) -> None:
         if message.author.bot:
             return
