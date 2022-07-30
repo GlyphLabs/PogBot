@@ -11,7 +11,7 @@ from os import environ
 class PogBot(Bot):
     def __init__(self, extensions: List[str] = None):
         super().__init__(
-            command_prefix=when_mentioned_or("pog", "pog "),
+            command_prefix=when_mentioned_or("pog ", "pog"),
             case_insensitive=True,
             intents=Intents.all(),
             owner_ids=(
@@ -20,6 +20,7 @@ class PogBot(Bot):
                 656021685203501066,  # RyZe#7968
                 839514280251359292,  # Random_1s#999
             ),
+            help_command=PogBotHelp(),
         )
         self.ext = extensions or ("chatbot", "error", "meme", "text", "economy")
         self.poglist = (
@@ -37,7 +38,6 @@ class PogBot(Bot):
             "thrzl break stuff",
             "for 'pog'",
         )
-        self.help_command = PogBotHelp()
 
     async def check(self, ctx: Context):
         if ctx.author.bot or not ctx.guild:
