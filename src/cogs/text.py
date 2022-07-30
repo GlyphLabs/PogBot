@@ -1,11 +1,15 @@
 from discord.ext import commands
+from discord.ext.bridge.core import bridge_command
+
+from bot import PogBot
 
 
 class TextManipulation(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: PogBot):
         self.bot = bot
+        self.qualified_name = "Text"
 
-    @commands.command()
+    @bridge_command()
     async def reverse(self, ctx, *, s: commands.clean_content):
         result = await commands.clean_content().convert(ctx, s[::-1])
         if len(result) <= 350:
@@ -21,7 +25,7 @@ class TextManipulation(commands.Cog):
                     f"**{ctx.author.mention} There was a problem, and I could not send the output. It may be too large or malformed**"
                 )
 
-    @commands.command()
+    @bridge_command()
     async def texttobinary(self, ctx, *, s):
         try:
             cleanS = await commands.clean_content().convert(
@@ -44,7 +48,7 @@ class TextManipulation(commands.Cog):
                     f"**{ctx.author.mention} There was a problem, and I could not send the output. It may be too large or malformed**"
                 )
 
-    @commands.command()
+    @bridge_command()
     async def binarytotext(self, ctx, *, s):
         try:
             cleanS = await commands.clean_content().convert(

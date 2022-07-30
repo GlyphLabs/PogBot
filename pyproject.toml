@@ -6,13 +6,15 @@ authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-discord = "^1.0.1"
 cachetools = "^4.2.2"
 jishaku = "^2.2.0"
 SQLAlchemy = "^1.4.39"
 asyncpg = "^0.26.0"
 humanize = "^4.2.3"
 ormsgpack = "^1.2.3"
+py-cord = "^2.0.0"
+aiodns = "^3.0.0"
+cchardet = "^2.1.7"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.971"

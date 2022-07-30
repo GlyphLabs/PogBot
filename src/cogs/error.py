@@ -4,9 +4,11 @@ import sys
 from traceback import print_exception
 from humanize import naturaldelta
 
+from bot import PogBot
+
 
 class Error(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: PogBot):
         self.bot = bot
 
     @commands.Cog.listener()

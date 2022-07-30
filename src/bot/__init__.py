@@ -1,4 +1,5 @@
-from discord.ext.commands import Bot, when_mentioned_or, Context
+from discord.ext.bridge.bot import Bot
+from discord.ext.commands.bot import when_mentioned_or, Context
 from discord import Message, Intents
 from asyncio import sleep
 from discord import utils
@@ -55,6 +56,8 @@ class PogBot(Bot):
             if word in self.poglist:
                 await sleep(1)
                 custom_emoji = utils.get(self.emojis, name="POG")
+                if not custom_emoji:
+                    return
                 await message.add_reaction(custom_emoji)
         if message.content == "family":
             await message.channel.send(

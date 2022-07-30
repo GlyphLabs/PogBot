@@ -5,6 +5,8 @@ from os import environ
 from aiohttp import ClientSession
 from typing import Optional
 from db import GuildSettings
+from bot import PogBot
+from discord.ext.bridge.core import bridge_command
 
 # initiate the object
 
@@ -20,7 +22,7 @@ dunno = (  # List of error responses for ai
 
 
 class chatbot(commands.Cog):
-    def __init__(self, client: commands.Bot):
+    def __init__(self, client: PogBot):
         self.client = client
         self.cd_mapping = commands.CooldownMapping.from_cooldown(
             4, 10, commands.BucketType.member
@@ -32,7 +34,7 @@ class chatbot(commands.Cog):
     def cog_unload(self):
         self.client.loop.create_task(self.http.close())
 
-    @commands.command()
+    @bridge_command()
     async def aichannel(self, ctx: commands.Context, channel: TextChannel):
         await GuildSettings.update_chatbot_channel(ctx.guild.id, channel.id)
         await ctx.send("Set AI channel to " + channel.name)
@@ -49,8 +51,7 @@ class chatbot(commands.Cog):
         if (
             message.author.id == self.client.user.id
             or not message.guild
-            or message.channel.id
-            != (c := await self.get_ai_channel(message.guild))
+            or message.channel.id != (c := await self.get_ai_channel(message.guild))
         ):
             return
         channel = message.channel
@@ -68,7 +69,7 @@ class chatbot(commands.Cog):
         except:
             await message.reply(choice(dunno))  # # nosec: B311
 
-    @commands.command()
+    @bridge_command()
     async def ai(self, ctx: commands.Context, message: Message):
         bucket = self.cd_mapping.get_bucket(message)
         retry_after = bucket.update_rate_limit()

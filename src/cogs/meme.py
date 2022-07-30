@@ -1,4 +1,5 @@
-from discord.ext import commands, tasks
+from discord.ext.tasks import loop  # type: ignore
+from discord.ext.commands import Cog, cooldown, BucketType  # type: ignore
 import aiohttp
 import discord
 from cachetools import TTLCache
@@ -7,9 +8,12 @@ from collections import deque
 from typing import Deque
 from ormsgpack import packb, unpackb
 
+from bot import PogBot
+from discord.ext.bridge.core import bridge_command
 
-class Meme(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+
+class Meme(Cog):
+    def __init__(self, bot: PogBot):
         self.bot = bot
         self.memehistory: TTLCache[str, Deque[bytes]] = TTLCache(100, 3600)
         self.memecache: TTLCache[str, Deque[bytes]] = TTLCache(100, 3600)
@@ -48,13 +52,13 @@ class Meme(commands.Cog):
                 if sub.lower() != "showerthoughts":
                     self.allmemes.appendleft(m)
 
-    @commands.command(
+    @bridge_command(
         name="meme",
         description="Returns a random meme from reddit!",
         aliases=["memz"],
         usage="meme [subreddit]",
     )
-    @commands.cooldown(1, 2, commands.BucketType.guild)
+    @cooldown(1, 2, BucketType.guild)
     async def meme(self, ctx, sub: str = None):
         if sub:
             if self.memecache.get(sub):
@@ -70,10 +74,10 @@ class Meme(commands.Cog):
         embed.set_image(url=meme["url"])
         await ctx.send(embed=embed)
 
-    @commands.command(
+    @bridge_command(
         description="Returns a random showerthought from reddit!", usage="showerthought"
     )
-    @commands.cooldown(1, 2, commands.BucketType.user)
+    @cooldown(1, 2, BucketType.user)
     async def showerthought(self, ctx):
         if not self.memecache.get("showerthoughts"):
             await ctx.trigger_typing()
@@ -84,32 +88,32 @@ class Meme(commands.Cog):
         embed.set_footer(text=f"👍 {meme['ups']} • u/{meme['author']}")
         await ctx.send(embed=embed)
 
-    @commands.command()
-    @commands.cooldown(1, 2, commands.BucketType.user)
+    @bridge_command()
+    @cooldown(1, 2, BucketType.user)
     async def dankmeme(self, ctx):
         await self.meme(ctx, "dankmemes")
 
-    @commands.command()
-    @commands.cooldown(1, 2, commands.BucketType.user)
+    @bridge_command()
+    @cooldown(1, 2, BucketType.user)
     async def antimeme(self, ctx):
         await self.meme(ctx, "antimeme")
 
-    @commands.command()
-    @commands.cooldown(1, 2, commands.BucketType.user)
+    @bridge_command()
+    @cooldown(1, 2, BucketType.user)
     async def me_irl(self, ctx):
         await self.meme(ctx, "me_irl")
 
-    @commands.command(aliases=["codememe"])
-    @commands.cooldown(1, 2, commands.BucketType.user)
+    @bridge_command(aliases=["codememe"])
+    @cooldown(1, 2, BucketType.user)
     async def programmerhumor(self, ctx):
         await self.meme(ctx, "ProgrammerHumor")
 
-    @tasks.loop(seconds=30)
+    @loop(seconds=30)
     async def get_more_memes(self):
         for sub in self.subreddits:
             await self.get_memes_from_sub(sub)
 
-    @tasks.loop(hours=24)
+    @loop(hours=24)
     async def reload_memes(self):
         self.memecache.clear()
         self.memecache = deque(maxlen=1024)
