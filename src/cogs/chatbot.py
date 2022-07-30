@@ -21,7 +21,7 @@ dunno = (  # List of error responses for ai
 )
 
 
-class chatbot(commands.Cog):
+class Chatbot(commands.Cog):
     def __init__(self, client: PogBot):
         self.client = client
         self.cd_mapping = commands.CooldownMapping.from_cooldown(
@@ -86,4 +86,4 @@ class chatbot(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(chatbot(client))
+    client.add_cog(Chatbot(client))
