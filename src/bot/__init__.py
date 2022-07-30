@@ -11,10 +11,13 @@ from os import environ
 
 class PogBot(Bot):
     def __init__(self, extensions: List[str] = None):
+        i = Intents.all()
+        i.typing = False
+        
         super().__init__(
             command_prefix=when_mentioned_or("pog ", "pog"),
             case_insensitive=True,
-            intents=Intents.all(),
+            intents=i,
             owner_ids=(
                 536644802595520534,  # thrizzle.#4258
                 819786180597907497,  # griffin#1405
