@@ -13,7 +13,7 @@ class PogBot(Bot):
     def __init__(self, extensions: List[str] = None):
         i = Intents.all()
         i.typing = False
-        
+
         super().__init__(
             command_prefix=when_mentioned_or("pog ", "pog"),
             case_insensitive=True,
