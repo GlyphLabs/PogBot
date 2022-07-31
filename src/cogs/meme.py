@@ -72,7 +72,7 @@ class Meme(Cog):
         embed.set_author(name=f"r/{meme['subreddit']}", url=meme["postLink"])
         embed.set_footer(text=f"👍 {meme['ups']} • u/{meme['author']}")
         embed.set_image(url=meme["url"])
-        await ctx.send(embed=embed)
+        await ctx.respond(embed=embed)
 
     @bridge_command(
         description="Returns a random showerthought from reddit!", usage="showerthought"
@@ -86,7 +86,7 @@ class Meme(Cog):
         embed = discord.Embed(description=meme["title"], color=ctx.author.color)
         embed.set_author(name="r/showerthoughts", url=meme["postLink"])
         embed.set_footer(text=f"👍 {meme['ups']} • u/{meme['author']}")
-        await ctx.send(embed=embed)
+        await ctx.respond(embed=embed)
 
     @bridge_command()
     @cooldown(1, 2, BucketType.user)

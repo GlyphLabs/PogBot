@@ -13,15 +13,15 @@ class Text(Cog):
     async def reverse(self, ctx, *, s: str):
         result = s[::-1]
         if len(result) <= 350:
-            await ctx.send(f"{result}")
+            await ctx.respond(f"{result}")
         else:
             try:
                 await ctx.author.send(f"{result}")
-                await ctx.send(
+                await ctx.respond(
                     f"**{ctx.author.mention} The output too was too large, so I sent it to your DMs! :mailbox_with_mail:**"
                 )
             except Exception:
-                await ctx.send(
+                await ctx.respond(
                     f"**{ctx.author.mention} There was a problem, and I could not send the output. It may be too large or malformed**"
                 )
 
@@ -30,19 +30,19 @@ class Text(Cog):
         try:
             cleanS = " ".join(format(ord(x), "b") for x in s)
         except Exception as e:
-            await ctx.send(
+            await ctx.respond(
                 f"**Error: `{e}`. This probably means the text is malformed. Sorry, you can always try here: http://www.unit-conversion.info/texttools/convert-text-to-binary/#data**"
             )
         if len(cleanS) <= 479:
-            await ctx.send(f"```fix\n{cleanS}```")
+            return await ctx.respond(f"```fix\n{cleanS}```")
         else:
             try:
                 await ctx.author.send(f"```fix\n{cleanS}```")
-                await ctx.send(
+                await ctx.respond(
                     f"**{ctx.author.mention} The output too was too large, so I sent it to your DMs! :mailbox_with_mail:**"
                 )
             except Exception:
-                await ctx.send(
+                await ctx.respond(
                     f"**{ctx.author.mention} There was a problem, and I could not send the output. It may be too large or malformed**"
                 )
 
@@ -51,19 +51,19 @@ class Text(Cog):
         try:
             cleanS = "".join([chr(int(s, 2)) for s in s.split()])
         except Exception as e:
-            await ctx.send(
+            return await ctx.respond(
                 f"**Error: `{e}`. This probably means the text is malformed. Sorry, you can always try here: http://www.unit-conversion.info/texttools/convert-text-to-binary/#data**"
             )
         if len(cleanS) <= 479:
-            await ctx.send(f"```{cleanS}```")
+            await ctx.respond(f"```{cleanS}```")
         else:
             try:
                 await ctx.author.send(f"```{cleanS}```")
-                await ctx.send(
+                await ctx.respond(
                     f"**{ctx.author.mention} The output too was too large, so I sent it to your DMs! :mailbox_with_mail:**"
                 )
             except Exception:
-                await ctx.send(
+                await ctx.respond(
                     f"**{ctx.author.mention} There was a problem, and I could not send the output. It may be too large or malformed**"
                 )
 
@@ -72,19 +72,19 @@ class Text(Cog):
         try:
             cleanS = "".join(chr(ord(letter) + len(s)) for letter in s)
         except Exception as e:
-            return await ctx.send(
+            return await ctx.respond(
                 f"**Error: `{e}`. This probably means the input is malformed. Sorry, I'm not perfect and my creator is dumb**"
             )
         if len(cleanS) <= 479:
-            await ctx.send(f"```{cleanS}```")
+            await ctx.respond(f"```{cleanS}```")
         else:
             try:
                 await ctx.author.send(f"```{cleanS}```")
-                await ctx.send(
+                await ctx.respond(
                     f"**{ctx.author.mention} The output too was too large, so I sent it to your DMs! :mailbox_with_mail:**"
                 )
             except Exception:
-                await ctx.send(
+                await ctx.respond(
                     f"**{ctx.author.mention} There was a problem, and I could not send the output. It may be too large or malformed**"
                 )
 
@@ -93,19 +93,19 @@ class Text(Cog):
         try:
             cleanS = "".join(chr(ord(letter) - len(s)) for letter in s)
         except Exception as e:
-            return await ctx.send(
+            return await ctx.respond(
                 f"**Error: `{e}`. This probably means the input is malformed.**"
             )
         if len(cleanS) <= 479:
-            await ctx.send(f"```{cleanS}```")
+            await ctx.respond(f"```{cleanS}```")
         else:
             try:
                 await ctx.author.send(f"```{cleanS}```")
-                await ctx.send(
+                await ctx.respond(
                     f"**{ctx.author.mention} The output too was too large, so I sent it to your DMs! :mailbox_with_mail:**"
                 )
             except Exception:
-                await ctx.send(
+                await ctx.respond(
                     f"**{ctx.author.mention} There was a problem, and I could not send the output. It may be too large or malformed**"
                 )
 
@@ -114,15 +114,15 @@ class Text(Cog):
         lst = (str.upper, str.lower)
         newText = "".join(choice(lst)(c) for c in s)
         if len(newText) <= 380:
-            await ctx.send(newText)
+            await ctx.respond(newText)
         else:
             try:
                 await ctx.author.send(newText)
-                await ctx.send(
+                await ctx.respond(
                     f"**{ctx.author.mention} The output too was too large, so I sent it to your DMs! :mailbox_with_mail:**"
                 )
             except Exception:
-                await ctx.send(
+                await ctx.respond(
                     f"**{ctx.author.mention} There was a problem, and I could not send the output. It may be too large or malformed**"
                 )
 

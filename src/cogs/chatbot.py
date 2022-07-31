@@ -38,7 +38,7 @@ class Chatbot(commands.Cog):
     @bridge_command(description="Change the AI channel.")
     async def aichannel(self, ctx: commands.Context, channel: TextChannel):
         await GuildSettings.update_chatbot_channel(ctx.guild.id, channel.id)
-        await ctx.send("Set AI channel to " + channel.name)
+        await ctx.respond("Set AI channel to " + channel.name)
         await channel.send("👋🏽 Hi, I'm PogBot! You can chat with me in this channel :)")
 
     async def get_ai_channel(self, guild: Guild) -> Optional[int]:
@@ -75,7 +75,7 @@ class Chatbot(commands.Cog):
         bucket = self.cd_mapping.get_bucket(ctx)
         retry_after = bucket.update_rate_limit()
         if retry_after:
-            return await ctx.send("Woah, slow down!")
+            return await ctx.respond("Woah, slow down!")
         try:
             print(message)
             response = await self.http.get(

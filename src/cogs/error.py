@@ -27,7 +27,9 @@ class Error(commands.Cog):
             return
 
         elif isinstance(error, commands.DisabledCommand):
-            return await ctx.send(f"**:no_entry: `{ctx.command}` has been disabled.**")
+            return await ctx.respond(
+                f"**:no_entry: `{ctx.command}` has been disabled.**"
+            )
 
         elif isinstance(error, commands.NoPrivateMessage):
             try:
@@ -38,25 +40,25 @@ class Error(commands.Cog):
                 pass
         elif isinstance(error, commands.BadArgument):
             if ctx.command.qualified_name == "tag list":
-                return await ctx.send(
+                return await ctx.respond(
                     "**:no_entry: I could not find that member. Please try again.**"
                 )
         elif isinstance(error, commands.BotMissingPermissions):
-            return await ctx.send(
+            return await ctx.respond(
                 f"**:no_entry: Oops, I need `{error.missing_perms[0].replace('_', ' ')}` permission to run this command**"
             )
         elif isinstance(error, commands.CommandOnCooldown):
-            return await ctx.send(
+            return await ctx.respond(
                 f"**:no_entry: Woah there, that command is on a cooldown for {naturaldelta(error.retry_after)}!**"
             )
         elif isinstance(error, commands.CheckFailure) or isinstance(
             error, commands.MissingPermissions
         ):
-            return await ctx.send(
+            return await ctx.respond(
                 f"**:no_entry: You can't use that command, you're missing the {', '.join(error.missing_perms.upper())} permissions**"
             )
         elif isinstance(error, commands.CommandInvokeError):
-            return await ctx.send(
+            return await ctx.respond(
                 f"**:no_entry: not pog! :((\ni made an oopsie: \\\\ \n  {error}**"
             )
         print("Ignoring exception in command {}:".format(ctx.command), file=sys.stderr)

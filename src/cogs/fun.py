@@ -1,4 +1,4 @@
-from discord.ext.commands import ( # type: ignore
+from discord.ext.commands import (  # type: ignore
     Cog,
     Context,
 )
@@ -7,6 +7,7 @@ from random import choice, randint
 from aiohttp import ClientSession
 from discord.ext.bridge.core import bridge_command
 from bot import PogBot
+
 
 class Fun(Cog):
     def __init_(self, bot: PogBot):
@@ -19,7 +20,7 @@ class Fun(Cog):
         ship = "".join([name1letters, name2letters])
         emb = Embed(color=0x36393E, description=f"{ship}")
         emb.set_author(name=f"{name1} + {name2}")
-        await ctx.send(embed=emb)
+        await ctx.respond(embed=emb)
 
     @bridge_command()
     async def ship(self, ctx: Context, name1: str, name2: str):
@@ -160,16 +161,13 @@ class Fun(Cog):
         )
         emb.add_field(name="Results:", value=f"{shipnumber}%", inline=True)
         emb.add_field(name="Status:", value=(status), inline=False)
-        await ctx.send(embed=emb)
+        await ctx.respond(embed=emb)
 
     @bridge_command(description="Determine your future!", aliases=["8ball"])
     async def eightball(self, ctx: Context, *, ballInput: str):
         """extra generic just the way you like it"""
         choiceType = randint(1, 3)
-        emb = Embed(
-            title=f"Question: {ballInput.capitalize()}",
-            colour=0x3BE801
-        )
+        emb = Embed(title=f"Question: {ballInput.capitalize()}", colour=0x3BE801)
         if choiceType == 1:
             prediction = (
                 choice(
@@ -220,7 +218,7 @@ class Fun(Cog):
             name="Magic 8 ball",
             icon_url="https://www.horoscope.com/images-US/games/game-magic-8-ball-no-text.png",
         )
-        await ctx.send(embed=emb)
+        await ctx.respond(embed=emb)
 
     @bridge_command(name="gay", description="A very mature command...", aliases=["gay"])
     async def gay_scanner(self, ctx: Context, *, user: Member):
@@ -270,7 +268,7 @@ class Fun(Cog):
         emb.add_field(name="Gayness:", value=f"{gayness}% gay")
         emb.add_field(name="Comment:", value=f"{gayStatus} :kiss_mm:")
         emb.set_author(name="Gay-Scanner™")
-        await ctx.send(embed=emb)
+        await ctx.respond(embed=emb)
 
     @bridge_command(description="Generate a roast!")
     async def roast(self, ctx: Context):
@@ -280,4 +278,8 @@ class Fun(Cog):
                 url="https://evilinsult.com/generate_insult.php?lang=en&type=json"
             )
         roast = await response.json()
-        await ctx.send(roast["insult"])
+        await ctx.respond(roast["insult"])
+
+
+def setup(bot):
+    Fun(bot)

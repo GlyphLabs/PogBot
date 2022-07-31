@@ -1,4 +1,5 @@
 from discord.ext.commands import command, cooldown, Context, Cog, BucketType
+from discord.ext.bridge.core import bridge_command
 from discord import Member, Embed
 from random import choice, randint
 from db import EconomyData
@@ -42,7 +43,7 @@ class Economy(Cog):
             "A̵̱͇̱͓͓̟͈̼̫͎͓̋̓̀̎̉̐̀̂̇̄H̷̰̼̭͇͍̭͕̥͈̥͆͛̋H̸̨̧̧̧̛͖̟̣͖̙͎̩͔̬̞̽̅͊̄͆̂͛̿͋̌̉̇H̷̜̞͖̮̭̰̠͙͎̖̟͚̜̤͂̕͘͜",
         )
 
-    @command(name="rob", description="Rob a user!")
+    @bridge_command(name="rob", description="Rob a user!")
     @cooldown(1, 120, BucketType.user)
     async def rob(self, ctx: Context, *, member: Member):
         worked = randint(0, 1)
@@ -68,16 +69,16 @@ class Economy(Cog):
             embed.set_author(name="You were caught!")
             await ctx.reply(embed=embed)
 
-    @command(name="work", description="Work for some amadola!", usage="work")
+    @bridge_command(name="work", description="Work for some amadola!", usage="work")
     @cooldown(1, 360, BucketType.user)
     async def work(self, ctx: Context):
         job = choice(self.jobs)
         money = randint(0, 3000)
         jobmsg = f"You worked as a **{job}** and earned **{money} pog coins**"
         await EconomyData.update_wallet(ctx.author.id, money)
-        await ctx.send(jobmsg)
+        await ctx.respond(jobmsg)
 
-    @command(
+    @bridge_command(
         aliases=["dep", "bank"],
         name="deposit",
         description="Deposit some money into your bank account!",
@@ -86,28 +87,30 @@ class Economy(Cog):
     @cooldown(1, 10, BucketType.user)
     async def deposit(self, ctx: Context, amt=None):
         if not amt:
-            return await ctx.send(
+            return await ctx.respond(
                 "You forgot to tell me how much money you wanted to deposit!"
             )
         try:
             amt = int(amt)
         except ValueError:
             if amt.lower() != "all":
-                await ctx.send(
+                await ctx.respond(
                     "You didn't give me a number! How was I supposed to work with that?"
                 )
         if type(amt) == int and amt < 1:
-            return await ctx.send("😳")
+            return await ctx.respond("😳")
         user = await EconomyData.get(ctx.author.id)
         if type(amt) == str and amt.lower() == "all":
             amt = user.wallet
         if user.wallet < amt:
-            await ctx.send("You don't have enough money in your wallet for that!")
+            await ctx.respond("You don't have enough money in your wallet for that!")
         else:
             await EconomyData.deposit(ctx.author.id, amt)
-            await ctx.send(f"You just withdrew **{amt}** pog coins from your wallet!")
+            await ctx.respond(
+                f"You just withdrew **{amt}** pog coins from your wallet!"
+            )
 
-    @command(
+    @bridge_command(
         name="withdraw",
         description="Withdraw pog coins from your bank account!",
         usage="withdraw <number>",
@@ -116,33 +119,35 @@ class Economy(Cog):
     @cooldown(1, 10, BucketType.user)
     async def withdraw(self, ctx: Context, amt=None):
         if not amt:
-            return await ctx.send(
+            return await ctx.respond(
                 "You forgot to tell me how much money you wanted to withdraw!"
             )
         try:
             amt = int(amt)
         except ValueError:
             if amt.lower() != "all":
-                await ctx.send(
+                await ctx.respond(
                     "You didn't give me a number! How was I supposed to work with that?"
                 )
         if type(amt) == int and amt < 1:
-            return await ctx.send("😳")
+            return await ctx.respond("😳")
 
         user = await EconomyData.get(ctx.author.id)
         if type(amt) == str and amt.lower() == "all":
             amt = user.bank
 
         if user.bank < amt:
-            await ctx.send("You don't have enough money in your bank account for that!")
+            await ctx.respond(
+                "You don't have enough money in your bank account for that!"
+            )
         else:
             await EconomyData.withdraw(ctx.author.id, amt)
 
-            await ctx.send(
+            await ctx.respond(
                 f"You just withdrew **{amt}** pog coins from your bank account!"
             )
 
-    @command(name="beg", description="Beg strangers for money!", usage="beg")
+    @bridge_command(name="beg", description="Beg strangers for money!", usage="beg")
     @cooldown(1, 30, BucketType.user)
     async def beg(self, ctx: Context):
         c = randint(0, 1)
@@ -168,12 +173,12 @@ class Economy(Cog):
             msg = f"**{donor}** gave {money} pog coins to {ctx.author.name}!"
             user = await EconomyData.get(ctx.author.id)
             await EconomyData.update_wallet(ctx.author.id, user.wallet + money)
-            await ctx.send(msg)
+            await ctx.respond(msg)
         else:
             m = choice(messages)
-            await ctx.send(f"{donor}: {m}")
+            await ctx.respond(f"{donor}: {m}")
 
-    @command(
+    @bridge_command(
         name="balance",
         description="Check your balance!",
         usage="balance [user]",
@@ -188,7 +193,7 @@ class Economy(Cog):
         embed.set_thumbnail(url=member.avatar_url)
         embed.add_field(name="Wallet", value=f"{user.wallet} pog coins")
         embed.add_field(name="Bank", value=f"{user.bank} pog coins")
-        await ctx.send(embed=embed)
+        await ctx.respond(embed=embed)
 
 
 def setup(bot):

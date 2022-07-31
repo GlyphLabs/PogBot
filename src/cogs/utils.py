@@ -5,29 +5,36 @@ from discord import Embed, Colour, Member, HTTPException
 from time import time, perf_counter
 from datetime import datetime, timedelta
 
+from bot import PogBot
 
 
 class Utils(Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: PogBot):
         self.bot = bot
 
     @command(name="reload", aliases=["r"])
     @is_owner()
-    async def reload(self, ctx: Context, cog: str):
+    async def reload(self, ctx: Context, cog: str = None):
+        if not cog:
+            for i in tuple(self.bot.cogs.keys()):
+                if i == "Jishaku":
+                    continue
+                self.bot.reload_extension(i.lower())
+            return await ctx.respond("Reloaded all cogs.")
         try:
             self.bot.reload_extension(cog)
-            await ctx.send(f"Reloaded `cogs.{cog}`")
+            await ctx.respond(f"Reloaded `cogs.{cog}`")
         except Exception as e:
-            await ctx.send(f"Error: {e}")
+            await ctx.respond(f"Error: {e}")
 
     @command()
     @is_owner()
     async def shutdown(self, ctx: Context):
-        await ctx.bot.logout()
+        await ctx.bot.close()
 
     @bridge_command(name="ping", description="Check bot latency")
     async def ping(self, ctx: Context):
-        msg = await ctx.send("`Pinging bot latency...`")
+        msg = await ctx.respond("`Pinging bot latency...`")
         times = []
         counter = 0
         embed = Embed(
@@ -59,7 +66,9 @@ class Utils(Cog):
         )
         return
 
-    @bridge_command(name="links", description="See important bot links", aliases=["invite"])
+    @bridge_command(
+        name="links", description="See important bot links", aliases=["invite"]
+    )
     async def links(self, ctx: Context):
         embed = Embed(colour=Colour.orange())
         embed.set_author(name="Links")
@@ -78,7 +87,7 @@ class Utils(Cog):
             value="[Click Here](https://github.com/ahino6942/public-PogBot)",
             inline=False,
         )
-        await ctx.author.send(embed=embed)
+        await ctx.respond(embed=embed, ephemeral=True)
         await ctx.message.add_reaction("✅")
 
     @bridge_command()
@@ -89,19 +98,25 @@ class Utils(Cog):
             icon_url=self.bot.user.avatar.url,
         )
         embed.add_field(
-            name="Made By:", value="""
+            name="Made By:",
+            value="""
             [Paragonii#6942](https://github.com/ahino6942)
             Squook#0001
             [thrzl#4258](https://thrzl.xyz)
             RyZe#7968
-            """, inline=False
+            """,
+            inline=False,
         )
         embed.add_field(name="Language:", value="Python", inline=False)
         embed.add_field(name="Prefix:", value="pog ", inline=False)
         embed.add_field(name="Bot Created:", value="May 25, 2021", inline=False)
-        await ctx.send(embed=embed)
+        await ctx.respond(embed=embed)
 
-    @bridge_command(name="userinfo", description="Get information about a certain user!", aliases=["user-info"])
+    @bridge_command(
+        name="userinfo",
+        description="Get information about a certain user!",
+        aliases=["user-info"],
+    )
     async def userinfo(self, ctx: Context, member: Member = None):
         member = ctx.author if not member else member
         roles = [role for role in member.roles[1:]]  # don't get @everyone
@@ -127,9 +142,11 @@ class Utils(Cog):
 
         embed.add_field(name="Roles:", value="".join([role.mention for role in roles]))
         embed.add_field(name="Highest Role:", value=member.top_role.mention)
-        await ctx.send(embed=embed)
+        await ctx.respond(embed=embed)
 
-    @bridge_command(description="Get information about the server!", aliases=["server-info"])
+    @bridge_command(
+        description="Get information about the server!", aliases=["server-info"]
+    )
     async def serverinfo(self, ctx: Context):
         total_text_channels = len(ctx.guild.text_channels)
         total_voice_channels = len(ctx.guild.voice_channels)
@@ -154,7 +171,7 @@ class Utils(Cog):
         )
         emb.set_footer(text=ctx.author)
         emb.set_thumbnail(url=self.bot.user.avatar_url)
-        await ctx.send(embed=emb)
+        await ctx.respond(embed=emb)
 
     @bridge_command(description="Check the bot's uptime")
     async def uptime(self, ctx: Context):
@@ -165,9 +182,9 @@ class Utils(Cog):
         embed.add_field(name="Uptime", value=text)
         embed.set_footer(text="PogBot")
         try:
-            await ctx.send(embed=embed)
+            await ctx.respond(embed=embed)
         except HTTPException:
-            await ctx.send("Current uptime: " + text)
+            await ctx.respond("Current uptime: " + text)
 
 
 def setup(bot):
