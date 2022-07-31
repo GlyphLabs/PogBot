@@ -15,6 +15,7 @@ ormsgpack = "^1.2.3"
 py-cord = "^2.0.0"
 aiodns = "^3.0.0"
 cchardet = "^2.1.7"
+"betterstatcord.py" = "^3.5.0"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.971"

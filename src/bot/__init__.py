@@ -1,13 +1,15 @@
 from discord.ext.bridge.bot import Bot
 from discord.ext.commands.bot import when_mentioned_or, Context
-from discord import Message, Intents
+from discord.ext.tasks import loop # type: ignore
+from discord import Message, Intents, ActivityType, Activity
 from asyncio import sleep
 from discord import utils
 from typing import List
 from helpcmd import PogBotHelp
 from time import time
 from os import environ
-
+from statcord import StatcordClient
+from random import choice
 
 class PogBot(Bot):
     def __init__(self, extensions: List[str] = None):
@@ -26,7 +28,7 @@ class PogBot(Bot):
             ),
             help_command=PogBotHelp(),
         )
-        self.ext = extensions or ("chatbot", "error", "meme", "text", "economy")
+        self.ext = extensions or ("chatbot", "error", "meme", "text", "economy", "fun", "utils")
         self.poglist = (
             "pog",
             "pogger",
@@ -36,17 +38,22 @@ class PogBot(Bot):
             "poggus",
         )
         self.statuses = (
-            "you pog",
-            "us grow",
-            "yuno miles music videos",
-            "thrzl break stuff",
-            "for 'pog'",
+            Activity(type=ActivityType.watching, name="you pog"),
+            Activity(type=ActivityType.listening, name="Yuno Miles"),
+            Activity(type=ActivityType.watching, name="us grow"),
+            Activity(type=ActivityType.watching, name="Yuno Miles music videos"),
+            Activity(type=ActivityType.watching, name="thrzl break stuff"),
         )
+        self.statcord_client = StatcordClient(self, environ["STATCORD_TOKEN"])
 
     async def check(self, ctx: Context):
         if ctx.author.bot or not ctx.guild:
             return False
         return True
+
+    @loop(seconds=60)
+    async def change_status(self):
+        await self.change_presence(activity=choice(self.statuses)) # nosec: B311
 
     def get_cog(self, name: str):
         return {n.lower(): cog for n, cog in self.cogs.items()}.get(name.lower())
@@ -87,3 +94,7 @@ class PogBot(Bot):
             self.load_extension(ext)
         self.start_time = time()
         super().run(token)
+
+    async def on_ready(self):
+        print("[i] Bot ready")
+        self.change_status.start()
