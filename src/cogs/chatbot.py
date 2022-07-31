@@ -7,6 +7,7 @@ from typing import Optional
 from db import GuildSettings
 from bot import PogBot
 from discord.ext.bridge.core import bridge_command
+from discord.ext.bridge import BridgeContext
 
 # initiate the object
 
@@ -25,7 +26,7 @@ class Chatbot(commands.Cog):
     def __init__(self, client: PogBot):
         self.client = client
         self.cd_mapping = commands.CooldownMapping.from_cooldown(
-            4, 10, commands.BucketType.member
+            4, 10, commands.BucketType.user
         )
         self.bid = environ.get("BRAINSHOP_ID")
         self.bkey = environ.get("BRAINSHOP_KEY")
@@ -67,17 +68,18 @@ class Chatbot(commands.Cog):
             res = await response.json()
             await message.reply(res["cnt"])
         except:
-            await message.reply(choice(dunno))  # # nosec: B311
+            await message.reply(choice(dunno))  # nosec: B311
 
     @bridge_command(description="Talk to the AI")
-    async def ai(self, ctx: commands.Context, message: str):
-        bucket = self.cd_mapping.get_bucket(ctx.message)
+    async def ai(self, ctx: BridgeContext, message: str):
+        bucket = self.cd_mapping.get_bucket(ctx)
         retry_after = bucket.update_rate_limit()
         if retry_after:
             return await ctx.send("Woah, slow down!")
         try:
+            print(message)
             response = await self.http.get(
-                f"http://api.brainshop.ai/get?bid={self.bid}&key={self.bkey}&uid={ctx.message.author.id}&msg={message}"
+                f"http://api.brainshop.ai/get?bid={self.bid}&key={self.bkey}&uid={ctx.author.id}&msg={message}"
             )
             res = await response.json()
             await ctx.reply(res["cnt"])
