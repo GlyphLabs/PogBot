@@ -34,11 +34,11 @@ class Chatbot(commands.Cog):
     def cog_unload(self):
         self.client.loop.create_task(self.http.close())
 
-    @bridge_command()
+    @bridge_command(description="Change the AI channel.")
     async def aichannel(self, ctx: commands.Context, channel: TextChannel):
         await GuildSettings.update_chatbot_channel(ctx.guild.id, channel.id)
         await ctx.send("Set AI channel to " + channel.name)
-        await channel.send("Hi I am Pog Memer, you can chat with me here")
+        await channel.send("👋🏽 Hi, I'm PogBot! You can chat with me in this channel :)")
 
     async def get_ai_channel(self, guild: Guild) -> Optional[int]:
         d = await GuildSettings.get(guild.id)
@@ -69,20 +69,20 @@ class Chatbot(commands.Cog):
         except:
             await message.reply(choice(dunno))  # # nosec: B311
 
-    @bridge_command()
-    async def ai(self, ctx: commands.Context, message: Message):
-        bucket = self.cd_mapping.get_bucket(message)
+    @bridge_command(description="Talk to the AI")
+    async def ai(self, ctx: commands.Context, message: str):
+        bucket = self.cd_mapping.get_bucket(ctx.message)
         retry_after = bucket.update_rate_limit()
         if retry_after:
             return await ctx.send("Woah, slow down!")
         try:
             response = await self.http.get(
-                f"http://api.brainshop.ai/get?bid={self.bid}&key={self.bkey}&uid={message.author.id}&msg={message.content}"
+                f"http://api.brainshop.ai/get?bid={self.bid}&key={self.bkey}&uid={ctx.message.author.id}&msg={message}"
             )
             res = await response.json()
-            await message.reply(res["cnt"])
+            await ctx.reply(res["cnt"])
         except:
-            await message.reply(choice(dunno))  # nosec: B311
+            await ctx.reply(choice(dunno))  # nosec: B311
 
 
 def setup(client):
