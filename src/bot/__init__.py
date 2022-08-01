@@ -43,6 +43,7 @@ class PogBot(Bot):
             Activity(type=ActivityType.watching, name="us grow"),
             Activity(type=ActivityType.watching, name="Yuno Miles music videos"),
             Activity(type=ActivityType.watching, name="thrzl break stuff"),
+            Activity(type=ActivityType.watching, name="me being verified"),
         )
         self.statcord_client = StatcordClient(self, environ["STATCORD_TOKEN"])
 
