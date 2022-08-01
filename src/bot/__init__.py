@@ -99,3 +99,4 @@ class PogBot(Bot):
     async def on_ready(self):
         print("[i] Bot ready")
         self.change_status.start()
+#
