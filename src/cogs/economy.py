@@ -190,7 +190,7 @@ class Economy(Cog):
         await ctx.trigger_typing()
         user: EconomyData = await EconomyData.get(member.id)
         embed = Embed(title=f"{member.name}'s balance", color=ctx.author.color)
-        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_thumbnail(url=member.avatar.url)
         embed.add_field(name="Wallet", value=f"{user.wallet} pog coins")
         embed.add_field(name="Bank", value=f"{user.bank} pog coins")
         await ctx.respond(embed=embed)
