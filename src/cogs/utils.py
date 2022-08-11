@@ -19,10 +19,10 @@ class Utils(Cog):
             for i in tuple(self.bot.cogs.keys()):
                 if i == "Jishaku":
                     continue
-                self.bot.reload_extension(i.lower())
+                self.bot.reload_extension(f"cogs.{i.lower()}")
             return await ctx.respond("Reloaded all cogs.")
         try:
-            self.bot.reload_extension(cog)
+            self.bot.reload_extension("cogs.{cog}")
             await ctx.respond(f"Reloaded `cogs.{cog}`")
         except Exception as e:
             await ctx.respond(f"Error: {e}")

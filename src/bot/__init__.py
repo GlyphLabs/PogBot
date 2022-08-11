@@ -80,21 +80,11 @@ class PogBot(Bot):
                 "https://tenor.com/view/i-dont-have-friends-i-have-family-theyre-not-my-friends-theyre-my-family-more-than-friends-gif-16061717"
             )
 
-    def load_extension(self, name: str):
-        super().load_extension(f"cogs.{name}")
-
-    def reload_extension(self, name: str):
-        self.unload_extension(name)
-        self.load_extension(name)
-
-    def unload_extension(self, name: str):
-        super().unload_extension(f"cogs.{name}")
-
     def run(self):
         token = environ.get("TOKEN")
         super().load_extension("jishaku")
         for ext in self.ext:
-            self.load_extension(ext)
+            self.load_extension(f"cogs.{ext}")
         self.start_time = time()
         super().run(token)
 
