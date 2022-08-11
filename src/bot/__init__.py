@@ -71,7 +71,7 @@ class PogBot(Bot):
         for word in message.content.lower().split(" "):
             if word in self.poglist:
                 await sleep(1)
-                custom_emoji = utils.get(self.emojis, emoji.id == 846888695717036033)
+                custom_emoji = utils.get(self.emojis, id = 846888695717036033)
                 if not custom_emoji:
                     return
                 await message.add_reaction(custom_emoji)
