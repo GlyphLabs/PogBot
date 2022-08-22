@@ -1,0 +1,11 @@
+cachetools
+jishaku
+SQLAlchemy
+asyncpg
+humanize
+ormsgpack
+py-cord
+aiodns
+cchardet
+betterstatcord.py
+python-dotenv
