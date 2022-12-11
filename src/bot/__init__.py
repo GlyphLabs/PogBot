@@ -14,6 +14,7 @@ from random import choice
 class PogBot(Bot):
     def __init__(self, extensions: List[str] = None):
         i = Intents.all()
+        i.message_content = False
         i.typing = False
 
         super().__init__(
