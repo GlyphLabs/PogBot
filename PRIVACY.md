@@ -10,6 +10,10 @@ PogBot does not collect, store, or share any personal or sensitive information f
 
 PogBot takes the security of user information seriously and implements appropriate technical and organizational measures to protect user information against unauthorized access, use, disclosure or destruction.
 
+## Data Usage
+
+PogBot only uses data for the bot's reaction feature.
+
 ## Changes to This Privacy Policy
 
 We may update this privacy policy from time to time to reflect changes in our practices or laws. We will notify users of any material changes to this policy through a notice in the Discord platform or other appropriate means.
