@@ -12,7 +12,7 @@ class Error(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
+    async def on_application_command_error(self, ctx, error):
         """The event triggered when an error is raised while invoking a command.
         ctx   : Context
         error : Exception"""
