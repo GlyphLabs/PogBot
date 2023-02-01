@@ -1,6 +1,4 @@
 from discord.ext.commands.help import HelpCommand
-from discord.ext.commands.core import Group
-from discord.utils import maybe_coroutine
 from discord import Embed, Colour
 from .buttons import HelpButtons
 

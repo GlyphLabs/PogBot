@@ -147,13 +147,13 @@ class Music(commands.Cog):
     async def play(self, ctx, *, query: str = None):
         empty = []
         try:
-            test = str(que[ctx.guild.id])
+            str(que[ctx.guild.id])
         except:
             que[ctx.guild.id] = empty
         """ Searches and plays a song from a given query. """
         # Get the player for this guild from cache.
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-        if query == None:
+        if query is None:
             if player.paused:
                 await player.set_pause(False)
                 await ctx.message.add_reaction("▶")
@@ -240,7 +240,7 @@ class Music(commands.Cog):
         if ctx.invoked_subcommand is None:
             embed = discord.Embed(
                 title="Radio Stations",
-                description=f"**Chill FM** - LoFi Hip Hop\n**RDMIX HOT 100** - Hip Hop/Rap",
+                description="**Chill FM** - LoFi Hip Hop\n**RDMIX HOT 100** - Hip Hop/Rap",
                 color=discord.Color.green(),
             )
             await ctx.send(embed=embed)
@@ -314,7 +314,7 @@ class Music(commands.Cog):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         current = await player.node.get_tracks(f"ytsearch:{player.current.identifier}")
         current = current["tracks"][0]
-        embed = discord.Embed(
+        discord.Embed(
             title=f"Current Track for {ctx.guild.name}",
             description=f"{current['info']['title']} - {current['info']['author']}",
         )
@@ -357,7 +357,7 @@ class Music(commands.Cog):
                 )
                 for t in que[ctx.guild.id][start:end]:
                     try:
-                        d = que[ctx.guild.id][end]
+                        que[ctx.guild.id][end]
                     except IndexError:
                         end = len(que[ctx.guild.id])
                     if int(que[ctx.guild.id].index(t)) == 0:

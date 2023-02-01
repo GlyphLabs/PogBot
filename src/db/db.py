@@ -16,7 +16,11 @@ session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 class MsgPackMixin:
     def serialize(self):
-        return packb({column.name: getattr(self, column.name) for column in self.__table__.columns if not column.name.startswith("_")})
+        return packb({
+            column.name: getattr(self, column.name)
+            for column in self.__table__.columns
+            if not column.name.startswith("_")
+        })
 
     @classmethod
     def from_data(cls, data):

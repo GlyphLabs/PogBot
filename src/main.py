@@ -1,5 +1,4 @@
 from bot import PogBot
-from discord.errors import ExtensionFailed
 
 bot = PogBot()
 

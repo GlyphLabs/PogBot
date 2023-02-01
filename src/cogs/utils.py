@@ -152,7 +152,6 @@ class Utils(Cog):
     async def serverinfo(self, ctx: Context):
         total_text_channels = len(ctx.guild.text_channels)
         total_voice_channels = len(ctx.guild.voice_channels)
-        total_channels = total_text_channels + total_voice_channels
 
         emb = Embed(color=Colour.blue(), timestamp=datetime.utcnow())
         emb.set_author(name=f"Server Info - {ctx.guild.name}")

@@ -1,4 +1,4 @@
-from discord.ext.commands import command, cooldown, Context, Cog, BucketType
+from discord.ext.commands import cooldown, Context, Cog, BucketType
 from discord.ext.bridge.core import bridge_command
 from discord import Member, Embed
 from random import choice, randint

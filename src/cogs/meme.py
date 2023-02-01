@@ -1,12 +1,8 @@
-from discord.ext.tasks import loop  # type: ignore
 from discord.ext.commands import Cog, cooldown, BucketType  # type: ignore
 from aiohttp import ClientSession
 import discord
-from cachetools import TTLCache
-from random import choice
 from collections import deque
-from typing import Deque
-from ormsgpack import packb, unpackb
+from ormsgpack import packb
 
 from bot import PogBot
 from discord.ext.bridge.core import bridge_command
