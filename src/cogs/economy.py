@@ -185,9 +185,9 @@ class Economy(Cog):
         aliases=["bal", "money", "cash"],
     )
     async def balance(self, ctx: Context, member: Member = None):
+        await ctx.defer()
         if not member:
             member = ctx.author
-        await ctx.trigger_typing()
         user: EconomyData = await EconomyData.get(member.id)
         embed = Embed(title=f"{member.name}'s balance", color=ctx.author.color)
         embed.set_thumbnail(url=member.avatar.url)
