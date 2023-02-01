@@ -1,5 +1,5 @@
 from discord.ext.commands import cooldown, Context, Cog, BucketType
-from discord.ext.bridge.core import bridge_command
+from discord.ext.commands import slash_command
 from discord import Member, Embed
 from random import choice, randint
 from db import EconomyData
@@ -43,7 +43,7 @@ class Economy(Cog):
             "A̵̱͇̱͓͓̟͈̼̫͎͓̋̓̀̎̉̐̀̂̇̄H̷̰̼̭͇͍̭͕̥͈̥͆͛̋H̸̨̧̧̧̛͖̟̣͖̙͎̩͔̬̞̽̅͊̄͆̂͛̿͋̌̉̇H̷̜̞͖̮̭̰̠͙͎̖̟͚̜̤͂̕͘͜",
         )
 
-    @bridge_command(name="rob", description="Rob a user!")
+    @slash_command(name="rob", description="Rob a user!")
     @cooldown(1, 120, BucketType.user)
     async def rob(self, ctx: Context, *, member: Member):
         worked = randint(0, 1)
@@ -69,7 +69,7 @@ class Economy(Cog):
             embed.set_author(name="You were caught!")
             await ctx.reply(embed=embed)
 
-    @bridge_command(name="work", description="Work for some amadola!", usage="work")
+    @slash_command(name="work", description="Work for some amadola!", usage="work")
     @cooldown(1, 360, BucketType.user)
     async def work(self, ctx: Context):
         job = choice(self.jobs)
@@ -78,7 +78,7 @@ class Economy(Cog):
         await EconomyData.update_wallet(ctx.author.id, money)
         await ctx.respond(jobmsg)
 
-    @bridge_command(
+    @slash_command(
         aliases=["dep", "bank"],
         name="deposit",
         description="Deposit some money into your bank account!",
@@ -110,7 +110,7 @@ class Economy(Cog):
                 f"You just deposited **{amt}** pog coins to your bank account!"
             )
 
-    @bridge_command(
+    @slash_command(
         name="withdraw",
         description="Withdraw pog coins from your bank account!",
         usage="withdraw <number>",
@@ -147,7 +147,7 @@ class Economy(Cog):
                 f"You just withdrew **{amt}** pog coins from your bank account!"
             )
 
-    @bridge_command(name="beg", description="Beg strangers for money!", usage="beg")
+    @slash_command(name="beg", description="Beg strangers for money!", usage="beg")
     @cooldown(1, 30, BucketType.user)
     async def beg(self, ctx: Context):
         c = randint(0, 1)
@@ -178,7 +178,7 @@ class Economy(Cog):
             m = choice(messages)
             await ctx.respond(f"{donor}: {m}")
 
-    @bridge_command(
+    @slash_command(
         name="balance",
         description="Check your balance!",
         usage="balance [user]",

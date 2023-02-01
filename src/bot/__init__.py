@@ -1,5 +1,4 @@
-from discord.ext.bridge.bot import Bot
-from discord.ext.commands.bot import when_mentioned_or, Context
+from discord.ext.commands.bot import when_mentioned_or, Context, Bot
 from discord.ext.tasks import loop # type: ignore
 from discord import Message, Intents, ActivityType, Activity
 from asyncio import sleep

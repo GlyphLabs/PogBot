@@ -6,8 +6,8 @@ from aiohttp import ClientSession
 from typing import Optional
 from db import GuildSettings
 from bot import PogBot
-from discord.ext.bridge.core import bridge_command
-from discord.ext.bridge import BridgeContext
+from discord.ext.commands import slash_command
+from discord import Interaction
 
 # initiate the object
 
@@ -35,8 +35,8 @@ class Chatbot(commands.Cog):
     def cog_unload(self):
         self.client.loop.create_task(self.http.close())
 
-    @bridge_command(description="Change the AI channel.")
-    async def aichannel(self, ctx: commands.Context, channel: TextChannel):
+    @slash_command(description="Change the AI channel.")
+    async def aichannel(self, ctx: Interaction, channel: TextChannel):
         await GuildSettings.update_chatbot_channel(ctx.guild.id, channel.id)
         await ctx.respond("Set AI channel to " + channel.name)
         await channel.send("👋🏽 Hi, I'm PogBot! You can chat with me in this channel :)")
@@ -70,8 +70,8 @@ class Chatbot(commands.Cog):
         except:
             await message.reply(choice(dunno))  # nosec: B311
 
-    @bridge_command(description="Talk to the AI")
-    async def ai(self, ctx: BridgeContext, message: str):
+    @slash_command(description="Talk to the AI")
+    async def ai(self, ctx: Interaction, message: str):
         bucket = self.cd_mapping.get_bucket(ctx)
         retry_after = bucket.update_rate_limit()
         if retry_after:

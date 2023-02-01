@@ -5,7 +5,7 @@ from discord.ext.commands import (  # type: ignore
 from discord import Embed, Member
 from random import choice, randint
 from aiohttp import ClientSession
-from discord.ext.bridge.core import bridge_command
+from discord.ext.commands import slash_command
 from bot import PogBot
 
 
@@ -13,7 +13,7 @@ class Fun(Cog):
     def __init_(self, bot: PogBot):
         self.bot = bot
 
-    @bridge_command()
+    @slash_command()
     async def combine(self, ctx: Context, name1: str, name2: str):
         name1letters = name1[: round(len(name1) / 2)]
         name2letters = name2[round(len(name2) / 2) :]
@@ -22,7 +22,7 @@ class Fun(Cog):
         emb.set_author(name=f"{name1} + {name2}")
         await ctx.respond(embed=emb)
 
-    @bridge_command()
+    @slash_command()
     async def ship(self, ctx: Context, name1: str, name2: str):
         shipnumber = randint(0, 100)
         if 0 <= shipnumber <= 10:
@@ -163,7 +163,7 @@ class Fun(Cog):
         emb.add_field(name="Status:", value=(status), inline=False)
         await ctx.respond(embed=emb)
 
-    @bridge_command(description="Determine your future!", aliases=["8ball"])
+    @slash_command(description="Determine your future!", aliases=["8ball"])
     async def eightball(self, ctx: Context, *, ballInput: str):
         """extra generic just the way you like it"""
         choiceType = randint(1, 3)
@@ -220,7 +220,7 @@ class Fun(Cog):
         )
         await ctx.respond(embed=emb)
 
-    @bridge_command(name="gay", description="A very mature command...", aliases=["gay"])
+    @slash_command(name="gay", description="A very mature command...", aliases=["gay"])
     async def gay_scanner(self, ctx: Context, *, user: Member):
         """very mature command yes haha"""
         if not user:
@@ -270,7 +270,7 @@ class Fun(Cog):
         emb.set_author(name="Gay-Scanner™")
         await ctx.respond(embed=emb)
 
-    @bridge_command(description="Generate a roast!")
+    @slash_command(description="Generate a roast!")
     async def roast(self, ctx: Context):
         await ctx.trigger_typing()
         async with ClientSession() as session:

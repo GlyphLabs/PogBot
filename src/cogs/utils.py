@@ -1,6 +1,6 @@
 from discord.ext.commands.cog import Cog
 from discord.ext.commands.core import is_owner, command, Context
-from discord.ext.bridge.core import bridge_command
+from discord.ext.commands import slash_command
 from discord import Embed, Colour, Member, HTTPException
 from time import time, perf_counter
 from datetime import datetime, timedelta
@@ -35,7 +35,7 @@ class Utils(Cog):
     async def shutdown(self, ctx: Context):
         await ctx.bot.close()
 
-    @bridge_command(name="ping", description="Check bot latency")
+    @slash_command(name="ping", description="Check bot latency")
     async def ping(self, ctx: Context):
         msg = await ctx.respond("`Pinging bot latency...`")
         times = []
@@ -69,7 +69,7 @@ class Utils(Cog):
         )
         return
 
-    @bridge_command(
+    @slash_command(
         name="links", description="See important bot links", aliases=["invite"]
     )
     async def links(self, ctx: Context):
@@ -92,7 +92,7 @@ class Utils(Cog):
         )
         await ctx.respond(embed=embed, ephemeral=True)
 
-    @bridge_command()
+    @slash_command()
     async def botinfo(self, ctx: Context):
         embed = Embed(colour=Colour.orange())
         embed.set_author(
@@ -114,7 +114,7 @@ class Utils(Cog):
         embed.add_field(name="Bot Created:", value="May 25, 2021", inline=False)
         await ctx.respond(embed=embed)
 
-    @bridge_command(
+    @slash_command(
         name="userinfo",
         description="Get information about a certain user!",
         aliases=["user-info"],
@@ -146,7 +146,7 @@ class Utils(Cog):
         embed.add_field(name="Highest Role:", value=member.top_role.mention)
         await ctx.respond(embed=embed)
 
-    @bridge_command(
+    @slash_command(
         description="Get information about the server!", aliases=["server-info"]
     )
     async def serverinfo(self, ctx: Context):
@@ -174,7 +174,7 @@ class Utils(Cog):
         emb.set_thumbnail(url=self.bot.user.avatar_url)
         await ctx.respond(embed=emb)
 
-    @bridge_command(description="Check the bot's uptime")
+    @slash_command(description="Check the bot's uptime")
     async def uptime(self, ctx: Context):
         current_time = time()
         difference = int(round(current_time - self.bot.start_time))

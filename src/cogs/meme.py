@@ -5,8 +5,8 @@ from collections import deque
 from ormsgpack import packb
 
 from bot import PogBot
-from discord.ext.bridge.core import bridge_command
-from discord.ext.bridge.context import BridgeContext
+from discord.ext.commands import slash_command
+from discord import Interaction
 
 
 class Meme(Cog):
@@ -49,14 +49,14 @@ class Meme(Cog):
                 if sub.lower() != "showerthoughts":
                     self.allmemes.appendleft(m)
 
-    @bridge_command(
+    @slash_command(
         name="meme",
         description="Returns a random meme from reddit!",
         aliases=["memz"],
         usage="meme [subreddit]",
     )
     @cooldown(1, 2, BucketType.guild)
-    async def meme(self, ctx: BridgeContext, sub: str = None):
+    async def meme(self, ctx: Interaction, sub: str = None):
         await ctx.defer()
         async with ClientSession() as session:
             res = await session.get(f"https://dreme.up.railway.app/{sub if sub else ''}")
@@ -69,7 +69,7 @@ class Meme(Cog):
         embed.set_image(url=meme["url"])
         await ctx.respond(embed=embed)
 
-    @bridge_command(
+    @slash_command(
         description="Returns a random showerthought from reddit!", usage="showerthought"
     )
     @cooldown(1, 2, BucketType.user)
@@ -85,22 +85,22 @@ class Meme(Cog):
         embed.set_footer(text=f"👍 {meme['ups']} • u/{meme['author']}")
         await ctx.respond(embed=embed)
 
-    @bridge_command()
+    @slash_command()
     @cooldown(1, 2, BucketType.user)
     async def dankmeme(self, ctx):
         await self.meme(ctx, "dankmemes")
 
-    @bridge_command()
+    @slash_command()
     @cooldown(1, 2, BucketType.user)
     async def antimeme(self, ctx):
         await self.meme(ctx, "antimeme")
 
-    @bridge_command()
+    @slash_command()
     @cooldown(1, 2, BucketType.user)
     async def me_irl(self, ctx):
         await self.meme(ctx, "me_irl")
 
-    @bridge_command(aliases=["codememe"])
+    @slash_command(aliases=["codememe"])
     @cooldown(1, 2, BucketType.user)
     async def programmerhumor(self, ctx):
         await self.meme(ctx, "ProgrammerHumor")
