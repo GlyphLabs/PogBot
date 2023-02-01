@@ -107,7 +107,7 @@ class Economy(Cog):
         else:
             await EconomyData.deposit(ctx.author.id, amt)
             await ctx.respond(
-                f"You just withdrew **{amt}** pog coins from your wallet!"
+                f"You just deposited **{amt}** pog coins to your bank account!"
             )
 
     @bridge_command(
