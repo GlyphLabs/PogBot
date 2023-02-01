@@ -1,5 +1,5 @@
 FROM debian:11-slim AS build
-ARG POETRY_VERSION=1.1.13
+ARG POETRY_VERSION=1.3.2
 RUN apt-get update && \
   apt-get install --no-install-suggests --no-install-recommends --yes python3-venv gcc libpython3-dev && \
   apt-get clean && \

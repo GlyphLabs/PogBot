@@ -17,7 +17,8 @@ aiodns = "^3.0.0"
 cchardet = "^2.1.7"
 "betterstatcord.py" = "^3.5.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.0.239"
 mypy = "^0.971"
 bandit = "^1.7.4"
 black = "^22.6.0"
