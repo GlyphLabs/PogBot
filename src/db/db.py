@@ -16,7 +16,7 @@ session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 class MsgPackMixin:
     def serialize(self):
-        return packb({c.name: getattr(self, c.name) for c in self.__table__.columns})
+        return packb({column.name: getattr(self, column.name) for column in self.__table__.columns if not column.name.startswith("_")})
 
     @classmethod
     def from_data(cls, data):
@@ -33,11 +33,13 @@ class EconomyData(Base, MsgPackMixin):  # type: ignore
 
     @classmethod
     async def update_wallet(cls, id: int, wallet_amount: int) -> None:
-        r = await cls.get(id)
         async with session() as s:
-            r.wallet += wallet_amount
+            results = await s.execute(select(cls).where(cls.id == id))
+            record = results.one()[0]
+            record.wallet = record.wallet + wallet_amount
             await s.commit()
-            cls.cache[id] = r.serialize()
+
+            cls.cache[id] = record.serialize()
 
     @classmethod
     async def get(cls, id: int) -> EconomyData:
@@ -60,36 +62,44 @@ class EconomyData(Base, MsgPackMixin):  # type: ignore
     @classmethod
     async def update_bank(cls, id: int, bank_amount: int) -> None:
         async with session() as s:
-            eco = await cls.get(id)
-            eco.bank = bank_amount
+            results = await s.execute(select(cls).where(cls.id == id))
+            record = results.one()[0]
+            record.bank = record.bank + bank_amount
             await s.commit()
-            cls.cache[id] = eco.serialize()
+
+            cls.cache[id] = record.serialize()
 
     @classmethod
     async def update_bank_capacity(cls, id: int, bank_capacity: int) -> None:
         async with session() as s:
-            eco = await cls.get(id)
-            eco.bank_capacity = bank_capacity
+            results = await s.execute(select(cls).where(cls.id == id))
+            record = results.one()[0]
+            record.bank_capacity = record.bank_capacity + bank_capacity
             await s.commit()
-            cls.cache[id] = eco.serialize()
+
+            cls.cache[id] = record.serialize()
 
     @classmethod
     async def withdraw(cls, id: int, amount: int) -> None:
         async with session() as s:
-            eco = await cls.get(id)
-            eco.wallet += amount
-            eco.bank -= amount
+            results = await s.execute(select(cls).where(cls.id == id))
+            record = results.one()[0]
+            record.wallet = record.wallet + amount
+            record.bank = record.bank - amount
             await s.commit()
-            cls.cache[id] = eco.serialize()
+
+            cls.cache[id] = record.serialize()
 
     @classmethod
     async def deposit(cls, id: int, amount: int) -> None:
         async with session() as s:
-            eco = await cls.get(id)
-            eco.wallet -= amount
-            eco.bank += amount
+            results = await s.execute(select(cls).where(cls.id == id))
+            record = results.one()[0]
+            record.wallet = record.wallet - amount
+            record.bank = record.bank + amount
             await s.commit()
-            cls.cache[id] = eco.serialize()
+
+            cls.cache[id] = record.serialize()
 
     def __repr__(self):
         return f"<EconomyData(id={self.id})>"
