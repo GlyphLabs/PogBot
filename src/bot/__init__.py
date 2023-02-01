@@ -10,12 +10,14 @@ from time import time
 from os import environ
 from statcord import StatcordClient
 from random import choice
+from logging import info
 
 class PogBot(Bot):
     def __init__(self, extensions: List[str] = None):
         i = Intents.all()
         i.message_content = False
         i.typing = False
+        i.presences = False
 
         super().__init__(
             command_prefix=when_mentioned_or("pog ", "pog"),
@@ -29,7 +31,16 @@ class PogBot(Bot):
             ),
             help_command=PogBotHelp(),
         )
-        self.ext = extensions or ("chatbot", "error", "meme", "text", "economy", "fun", "utils")
+        self.ext = extensions or (
+            "chatbot",
+            "error",
+            "text",
+            "economy",
+            "fun",
+            "utils",
+            "meme"
+        )
+
         self.poglist = (
             "pog",
             "pogger",
@@ -84,12 +95,10 @@ class PogBot(Bot):
     def run(self):
         token = environ.get("TOKEN")
         super().load_extension("jishaku")
-        for ext in self.ext:
-            self.load_extension(f"cogs.{ext}")
         self.start_time = time()
         super().run(token)
 
     async def on_ready(self):
-        print("[i] Bot ready")
+        info("[i] Bot ready")
         self.change_status.start()
 #

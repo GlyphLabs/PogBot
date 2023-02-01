@@ -16,9 +16,9 @@ from discord.ext.bridge.context import BridgeContext
 class Meme(Cog):
     def __init__(self, bot: PogBot):
         self.bot = bot
-        self.memehistory: TTLCache[str, Deque[bytes]] = TTLCache(100, 3600)
-        self.memecache: TTLCache[str, Deque[bytes]] = TTLCache(100, 3600)
-        self.allmemes: Deque[bytes] = deque()
+        # self.memehistory: TTLCache[str, Deque[bytes]] = TTLCache(100, 3600)
+        # self.memecache: TTLCache[str, Deque[bytes]] = TTLCache(100, 3600)
+        # self.allmemes: Deque[bytes] = deque()
         self.subreddits = (
             "memes",
             "dankmemes",
@@ -27,7 +27,7 @@ class Meme(Cog):
             "wholesomememes",
             "antimeme",
         )
-        self.get_more_memes.start()
+        # self.get_more_memes.start()
 
     async def get_memes_from_sub(self, sub: str):
         async with ClientSession() as session:
@@ -61,12 +61,12 @@ class Meme(Cog):
     )
     @cooldown(1, 2, BucketType.guild)
     async def meme(self, ctx: BridgeContext, sub: str = None):
-        await ctx.trigger_typing()
+        await ctx.defer()
         async with ClientSession() as session:
             res = await session.get(f"https://dreme.up.railway.app/{sub if sub else ''}")
         if not res.ok:
             return
-        meme: dict = await res.json()[0]
+        meme: dict = (await res.json())[0]
         embed = discord.Embed(title=meme["title"], color=ctx.author.color)
         embed.set_author(name=f"r/{meme['subreddit']}", url=f'https://reddit.com{meme["permalink"]}')
         embed.set_footer(text=f"👍 {meme['ups']} • u/{meme['author']}")
@@ -78,14 +78,14 @@ class Meme(Cog):
     )
     @cooldown(1, 2, BucketType.user)
     async def showerthought(self, ctx):
-        await ctx.trigger_typing()
+        await ctx.defer()
         async with ClientSession() as session:
             res = await session.get("https://dreme.up.railway.app/showerthoughts")
         if not res.ok:
             return
-        meme: dict = unpackb(choice(self.memecache["showerthoughts"]))  # type: ignore
+        meme: dict = (await res.json())[0] # type: ignore
         embed = discord.Embed(description=meme["title"], color=ctx.author.color)
-        embed.set_author(name="r/showerthoughts", url=meme["postLink"])
+        embed.set_author(name="r/showerthoughts", url=meme["url"])
         embed.set_footer(text=f"👍 {meme['ups']} • u/{meme['author']}")
         await ctx.respond(embed=embed)
 

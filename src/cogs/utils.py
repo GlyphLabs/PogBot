@@ -19,12 +19,15 @@ class Utils(Cog):
             for i in tuple(self.bot.cogs.keys()):
                 if i == "Jishaku":
                     continue
-                self.bot.reload_extension(f"cogs.{i.lower()}")
+                self.bot.reload_extension(f"{i.lower()}")
             return await ctx.respond("Reloaded all cogs.")
         try:
-            self.bot.reload_extension("cogs.{cog}")
+            self.bot.reload_extension(f"{cog}")
             await ctx.respond(f"Reloaded `cogs.{cog}`")
         except Exception as e:
+            await ctx.send(e.__str__())
+            if "has not been loaded" in e.__str__():
+                self.bot.load_extension(f"{cog.lower()}")
             await ctx.respond(f"Error: {e}")
 
     @command()
@@ -88,7 +91,6 @@ class Utils(Cog):
             inline=False,
         )
         await ctx.respond(embed=embed, ephemeral=True)
-        await ctx.message.add_reaction("✅")
 
     @bridge_command()
     async def botinfo(self, ctx: Context):
