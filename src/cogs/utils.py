@@ -1,7 +1,6 @@
 from discord.ext.commands.cog import Cog
-from discord.ext.commands.core import is_owner, command, Context
-from discord.ext.commands import slash_command
-from discord import Embed, Colour, Member, HTTPException
+from discord.ext.commands import slash_command, command, is_owner
+from discord import Embed, Colour, Member, HTTPException, ApplicationContext
 from time import time, perf_counter
 from datetime import datetime, timedelta
 
@@ -14,7 +13,7 @@ class Utils(Cog):
 
     @command(name="reload", aliases=["r"])
     @is_owner()
-    async def reload(self, ctx: Context, cog: str = None):
+    async def reload(self, ctx: ApplicationContext, cog: str = None):
         if not cog:
             for i in tuple(self.bot.cogs.keys()):
                 if i == "Jishaku":
@@ -32,12 +31,12 @@ class Utils(Cog):
 
     @command()
     @is_owner()
-    async def shutdown(self, ctx: Context):
+    async def shutdown(self, ctx: ApplicationContext):
         await ctx.bot.close()
 
     @slash_command(name="ping", description="Check bot latency")
-    async def ping(self, ctx: Context):
-        msg = await ctx.respond("`Pinging bot latency...`")
+    async def ping(self, ctx: ApplicationContext):
+        await ctx.respond("`Pinging bot latency...`")
         times = []
         counter = 0
         embed = Embed(
@@ -48,7 +47,7 @@ class Utils(Cog):
         for _ in range(3):
             counter += 1
             start = perf_counter()
-            await msg.edit(content=f"Pinging... {counter}/3")
+            await ctx.edit(content=f"Pinging... {counter}/3")
             end = perf_counter()
             speed = round((end - start) * 1000)
             times.append(speed)
@@ -63,7 +62,7 @@ class Utils(Cog):
             value=f"{round((round(sum(times)) + round(self.bot.latency * 1000))/4)}ms",
         )
         embed.set_footer(text=f"Estimated total time elapsed: {round(sum(times))}ms")
-        await msg.edit(
+        await ctx.edit(
             content=f":ping_pong: **{round((round(sum(times)) + round(self.bot.latency * 1000))/4)}ms**",
             embed=embed,
         )
@@ -72,7 +71,7 @@ class Utils(Cog):
     @slash_command(
         name="links", description="See important bot links", aliases=["invite"]
     )
-    async def links(self, ctx: Context):
+    async def links(self, ctx: ApplicationContext):
         embed = Embed(colour=Colour.orange())
         embed.set_author(name="Links")
         embed.add_field(
@@ -93,7 +92,7 @@ class Utils(Cog):
         await ctx.respond(embed=embed, ephemeral=True)
 
     @slash_command()
-    async def botinfo(self, ctx: Context):
+    async def botinfo(self, ctx: ApplicationContext):
         embed = Embed(colour=Colour.orange())
         embed.set_author(
             name="Info",
@@ -119,7 +118,7 @@ class Utils(Cog):
         description="Get information about a certain user!",
         aliases=["user-info"],
     )
-    async def userinfo(self, ctx: Context, member: Member = None):
+    async def userinfo(self, ctx: ApplicationContext, member: Member = None):
         member = ctx.author if not member else member
         roles = [role for role in member.roles[1:]]  # don't get @everyone
         embed = Embed(
@@ -149,7 +148,7 @@ class Utils(Cog):
     @slash_command(
         description="Get information about the server!", aliases=["server-info"]
     )
-    async def serverinfo(self, ctx: Context):
+    async def serverinfo(self, ctx: ApplicationContext):
         total_text_channels = len(ctx.guild.text_channels)
         total_voice_channels = len(ctx.guild.voice_channels)
 
@@ -175,7 +174,7 @@ class Utils(Cog):
         await ctx.respond(embed=emb)
 
     @slash_command(description="Check the bot's uptime")
-    async def uptime(self, ctx: Context):
+    async def uptime(self, ctx: ApplicationContext):
         current_time = time()
         difference = int(round(current_time - self.bot.start_time))
         text = str(timedelta(seconds=difference))
