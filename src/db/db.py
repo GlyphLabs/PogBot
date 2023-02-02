@@ -124,7 +124,7 @@ class GuildSettings(Base, MsgPackMixin):  # type: ignore
                 await s.commit()
             else:
                 async with session() as s:
-                    results = await s.execute(select(cls).where(cls.id == id))
+                    results = await s.execute(select(cls).where(cls.guild_id == guild_id))
                     record = results.one()[0]
                     record.chatbot_channel = channel_id
                     await s.commit()
