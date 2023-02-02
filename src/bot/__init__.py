@@ -47,6 +47,7 @@ class PogBot(Bot):
             "pogg",
             "poger",
             "poggus",
+            "pogbot",
         )
         self.statuses = (
             Activity(type=ActivityType.watching, name="you pog"),
