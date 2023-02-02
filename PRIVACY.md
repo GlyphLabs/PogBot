@@ -12,7 +12,7 @@ PogBot takes the security of user information seriously and implements appropria
 
 ## Data Usage
 
-PogBot only uses data for the bot's reaction feature.
+PogBot uses message content data for the bot's reaction feature.
 
 ## Changes to This Privacy Policy
 
