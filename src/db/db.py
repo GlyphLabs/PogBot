@@ -123,7 +123,13 @@ class GuildSettings(Base, MsgPackMixin):  # type: ignore
                 s.add(GuildSettings(guild_id=guild_id, chatbot_channel=channel_id))
                 await s.commit()
             else:
-                g_settings.chatbot_channel = channel_id
+                async with session() as s:
+                    results = await s.execute(select(cls).where(cls.id == id))
+                    record = results.one()[0]
+                    record.chatbot_channel = channel_id
+                    await s.commit()
+
+                cls.cache[guild_id] = record.serialize()
                 await s.commit()
 
     @classmethod
