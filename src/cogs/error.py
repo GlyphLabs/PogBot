@@ -1,5 +1,5 @@
 from discord.ext import commands
-from discord import HTTPException
+from discord import HTTPException, Embed
 import sys
 from traceback import print_exception
 from humanize import naturaldelta
@@ -61,10 +61,17 @@ class Error(commands.Cog):
             return await ctx.respond(
                 f"**:no_entry: not pog! :((\ni made an oopsie: \\\\ \n  {error}**"
             )
-        print("Ignoring exception in command {}:".format(ctx.command), file=sys.stderr)
-        print("=" * 25)
-        print_exception(type(error), error, error.__traceback__, file=sys.stderr)
-        print("=" * 25)
+        else:
+            embed = Embed(
+                title="**Oh no...**",
+                description="Something went wrong! The devs have been notified and will deal with the problem shortly.\n**Need extra help?** Join the [**Support Server**](https://discord.gg/bNtj2nFnYA)",
+            )
+            embed.add_field(name="error", value=f"```{error}```")
+            await ctx.send(embed=embed)
+            print("Ignoring exception in command {}:".format(ctx.command), file=sys.stderr)
+            print("=" * 25)
+            print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+            print("=" * 25)
 
 
 def setup(bot):
