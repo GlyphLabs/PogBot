@@ -29,7 +29,7 @@ class Meme(Cog):
     async def meme(self, ctx: ApplicationContext, sub: str = None):
         await ctx.defer()
         async with ClientSession() as session:
-            res = await session.get(f"https://dreme.up.railway.app/{sub if sub else ''}")
+            res = await session.get(f"https://dreme.hop.sh/{sub if sub else ''}")
         if not res.ok:
             return
         meme: dict = (await res.json())[0]
