@@ -13,7 +13,7 @@ from logging import info
 
 class PogBot(Bot):
     def __init__(self, extensions: List[str] = None):
-        i = Intents.default()
+        i = Intents.all()
         i.message_content = True
         i.typing = False
         i.members = False
