@@ -16,7 +16,6 @@ class PogBot(Bot):
         i = Intents.all()
         i.message_content = True
         i.typing = False
-        i.members = False
         i.presences = False
 
         super().__init__(
