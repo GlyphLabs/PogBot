@@ -13,9 +13,10 @@ from logging import info
 
 class PogBot(Bot):
     def __init__(self, extensions: List[str] = None):
-        i = Intents.all()
+        i = Intents.default()
         i.message_content = True
         i.typing = False
+        i.members = False
         i.presences = False
 
         super().__init__(
