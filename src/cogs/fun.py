@@ -308,5 +308,5 @@ class Fun(Cog):
         await ctx.respond(roast["insult"])
 
 
-def setup(bot):
-    Fun(bot)
+def setup(bot: PogBot):
+    bot.add_cog(Fun(bot))
