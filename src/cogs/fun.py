@@ -32,8 +32,8 @@ class Fun(Cog):
         member = guild.get_member(msg["author"])
         if not member:
             member = await guild.fetch_member(msg["author"])
-        await ctx.send(
-            embed=Embed(description=msg["content"]).set_author(
+        await ctx.respond(
+            embed=Embed(description=msg["content"], color=0x2f3136).set_author(
                 name=member.display_name, icon_url=member.display_avatar
             )
         )
