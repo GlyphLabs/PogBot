@@ -1,5 +1,5 @@
 from discord.ext.commands.bot import when_mentioned_or, Context, Bot
-from discord.ext.tasks import loop # type: ignore
+from discord.ext.tasks import loop  # type: ignore
 from discord import Message, Intents, ActivityType, Activity
 from asyncio import sleep
 from discord import utils
@@ -10,6 +10,7 @@ from os import environ
 from statcord import StatcordClient
 from random import choice
 from logging import info
+
 
 class PogBot(Bot):
     def __init__(self, extensions: List[str] = None):
@@ -38,7 +39,7 @@ class PogBot(Bot):
             "economy",
             "fun",
             "utils",
-            "meme"
+            "meme",
         )
 
         self.poglist = (
@@ -58,7 +59,7 @@ class PogBot(Bot):
             Activity(type=ActivityType.watching, name="thrzl break stuff"),
             Activity(type=ActivityType.listening, name="Twenty One Pilots"),
             Activity(type=ActivityType.watching, name="me being verified"),
-            Activity(type=ActivityType.watching, name="TOP music vids")
+            Activity(type=ActivityType.watching, name="TOP music vids"),
         )
         self.statcord_client = StatcordClient(self, environ["STATCORD_TOKEN"])
 
@@ -69,7 +70,7 @@ class PogBot(Bot):
 
     @loop(seconds=60)
     async def change_status(self):
-        await self.change_presence(activity=choice(self.statuses)) # nosec: B311
+        await self.change_presence(activity=choice(self.statuses))  # nosec: B311
 
     def get_cog(self, name: str):
         return {n.lower(): cog for n, cog in self.cogs.items()}.get(name.lower())
@@ -84,7 +85,7 @@ class PogBot(Bot):
         for word in message.content.lower().split(" "):
             if word in self.poglist:
                 await sleep(1)
-                custom_emoji = utils.get(self.emojis, id = 846888695717036033)
+                custom_emoji = utils.get(self.emojis, id=846888695717036033)
                 if not custom_emoji:
                     return
                 await message.add_reaction(custom_emoji)
@@ -102,4 +103,6 @@ class PogBot(Bot):
     async def on_ready(self):
         info("[i] Bot ready")
         self.change_status.start()
+
+
 #

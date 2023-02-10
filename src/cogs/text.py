@@ -1,4 +1,4 @@
-from discord.ext.commands import Cog, Context # type: ignore
+from discord.ext.commands import Cog, Context  # type: ignore
 from discord.ext.commands import slash_command
 from random import choice
 

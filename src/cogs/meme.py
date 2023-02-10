@@ -34,7 +34,9 @@ class Meme(Cog):
             return
         meme: dict = (await res.json())[0]
         embed = discord.Embed(title=meme["title"], color=ctx.author.color)
-        embed.set_author(name=f"r/{meme['subreddit']}", url=f'https://reddit.com{meme["permalink"]}')
+        embed.set_author(
+            name=f"r/{meme['subreddit']}", url=f'https://reddit.com{meme["permalink"]}'
+        )
         embed.set_footer(text=f"👍 {meme['ups']} • u/{meme['author']}")
         embed.set_image(url=meme["url"])
         await ctx.respond(embed=embed)
@@ -65,6 +67,7 @@ class Meme(Cog):
     @cooldown(1, 2, BucketType.user)
     async def programmerhumor(self, ctx):
         await self.meme(ctx, "ProgrammerHumor")
+
 
 def setup(bot):
     bot.add_cog(Meme(bot))

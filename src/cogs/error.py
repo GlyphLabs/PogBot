@@ -68,7 +68,9 @@ class Error(commands.Cog):
             )
             embed.add_field(name="error", value=f"```{error}```")
             await ctx.send(embed=embed)
-            print("Ignoring exception in command {}:".format(ctx.command), file=sys.stderr)
+            print(
+                "Ignoring exception in command {}:".format(ctx.command), file=sys.stderr
+            )
             print("=" * 25)
             print_exception(type(error), error, error.__traceback__, file=sys.stderr)
             print("=" * 25)

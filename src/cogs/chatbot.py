@@ -5,7 +5,13 @@ from aiohttp import ClientSession
 from typing import Optional
 from db import GuildSettings
 from bot import PogBot
-from discord.ext.commands import slash_command, has_permissions, CooldownMapping, BucketType, Cog
+from discord.ext.commands import (
+    slash_command,
+    has_permissions,
+    CooldownMapping,
+    BucketType,
+    Cog,
+)
 from discord import ApplicationContext
 
 # initiate the object
@@ -24,9 +30,7 @@ dunno = (  # List of error responses for ai
 class Chatbot(Cog):
     def __init__(self, client: PogBot):
         self.client = client
-        self.cd_mapping = CooldownMapping.from_cooldown(
-            4, 10, BucketType.user
-        )
+        self.cd_mapping = CooldownMapping.from_cooldown(4, 10, BucketType.user)
         self.bid = environ.get("BRAINSHOP_ID")
         self.bkey = environ.get("BRAINSHOP_KEY")
         self.http = ClientSession()
