@@ -1,29 +1,49 @@
 from discord.ext.commands import (  # type: ignore
     Cog,
-    Context,
 )
-from discord import Embed, Member
+from discord import Embed, Member, Message, ApplicationContext
 from random import choice, randint
 from aiohttp import ClientSession
 from discord.ext.commands import slash_command
 from bot import PogBot
+from ormsgpack import packb, unpackb
+from typing import Dict
 
 
 class Fun(Cog):
     def __init_(self, bot: PogBot):
         self.bot = bot
+        self.snipe_cache: Dict[int, bytes] = {}
+
+    @Cog.listener()
+    async def on_message_delete(self, message: Message):
+        self.snipe_cache[message.guild.id] = packb({
+            "content": message.content,
+            "author": message.author.id
+        })
+
+    @slash_command(description="Get the last deleted message.")
+    async def snipe(self, ctx: ApplicationContext):
+        msg = unpackb(self.snipe_cache[ctx.guild.id])
+        guild = self.bot.get_guild(ctx.interaction.guild_id)
+        member = await guild.get_member(msg["author"])
+        if not member:
+            member = await guild.fetch_member(msg["author"])
+        await ctx.send(embed=Embed(
+            description=msg["content"]
+        ).set_author(name=member.display_name, icon_url=member.display_avatar))
 
     @slash_command()
-    async def combine(self, ctx: Context, name1: str, name2: str):
+    async def combine(self, ctx: ApplicationContext, name1: str, name2: str):
         name1letters = name1[: round(len(name1) / 2)]
-        name2letters = name2[round(len(name2) / 2) :]
+        name2letters = name2[round(len(name2) / 2):]
         ship = "".join([name1letters, name2letters])
         emb = Embed(color=0x36393E, description=f"{ship}")
         emb.set_author(name=f"{name1} + {name2}")
         await ctx.respond(embed=emb)
 
     @slash_command()
-    async def ship(self, ctx: Context, name1: str, name2: str):
+    async def ship(self, ctx: ApplicationContext, name1: str, name2: str):
         shipnumber = randint(0, 100)
         if 0 <= shipnumber <= 10:
             status = "Really low! {}".format(
@@ -164,10 +184,11 @@ class Fun(Cog):
         await ctx.respond(embed=emb)
 
     @slash_command(description="Determine your future!", aliases=["8ball"])
-    async def eightball(self, ctx: Context, *, ballInput: str):
+    async def eightball(self, ctx: ApplicationContext, *, ballInput: str):
         """extra generic just the way you like it"""
         choiceType = randint(1, 3)
-        emb = Embed(title=f"Question: {ballInput.capitalize()}", colour=0x3BE801)
+        emb = Embed(
+            title=f"Question: {ballInput.capitalize()}", colour=0x3BE801)
         if choiceType == 1:
             prediction = (
                 choice(
@@ -221,7 +242,7 @@ class Fun(Cog):
         await ctx.respond(embed=emb)
 
     @slash_command(name="gay", description="A very mature command...", aliases=["gay"])
-    async def gay_scanner(self, ctx: Context, *, user: Member):
+    async def gay_scanner(self, ctx: ApplicationContext, *, user: Member):
         """very mature command yes haha"""
         if not user:
             user = ctx.author.name
@@ -271,7 +292,7 @@ class Fun(Cog):
         await ctx.respond(embed=emb)
 
     @slash_command(description="Generate a roast!")
-    async def roast(self, ctx: Context):
+    async def roast(self, ctx: ApplicationContext):
         await ctx.trigger_typing()
         async with ClientSession() as session:
             response = await session.get(
