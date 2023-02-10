@@ -29,7 +29,7 @@ class Fun(Cog):
     async def snipe(self, ctx: ApplicationContext):
         msg = unpackb(self.snipe_cache[ctx.guild.id])
         guild = self.bot.get_guild(ctx.interaction.guild_id)
-        member = await guild.get_member(msg["author"])
+        member = guild.get_member(msg["author"])
         if not member:
             member = await guild.fetch_member(msg["author"])
         await ctx.send(
