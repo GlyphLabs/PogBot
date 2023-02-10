@@ -191,11 +191,11 @@ class Fun(Cog):
         await ctx.respond(embed=emb)
 
     @slash_command(description="Determine your future!", aliases=["8ball"])
-    async def eightball(self, ctx: ApplicationContext, *, ballInput: str):
+    async def eight_ball(self, ctx: ApplicationContext, *, ball_input: str):
         """extra generic just the way you like it"""
-        choiceType = randint(1, 3)
-        emb = Embed(title=f"Question: {ballInput.capitalize()}", colour=0x3BE801)
-        if choiceType == 1:
+        choice_type = randint(1, 3)
+        emb = Embed(title=f"Question: {ball_input.capitalize()}", colour=0x3BE801)
+        if choice_type == 1:
             prediction = (
                 choice(
                     [
@@ -214,7 +214,7 @@ class Fun(Cog):
                 + ":8ball:"
             )
 
-        elif choiceType == 2:
+        elif choice_type == 2:
             prediction = (
                 choice(
                     [
@@ -227,7 +227,7 @@ class Fun(Cog):
                 )
                 + ":8ball:"
             )
-        elif choiceType == 3:
+        elif choice_type == 3:
             prediction = (
                 choice(
                     [
