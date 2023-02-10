@@ -13,6 +13,12 @@ from logging import info
 
 
 class PogBot(Bot):
+    __slots__ = (
+        "statuses",
+        "ext",
+        "poglist",
+        "statcord_client"
+    )
     def __init__(self, extensions: List[str] = None):
         i = Intents.all()
         i.message_content = True
@@ -20,6 +26,16 @@ class PogBot(Bot):
         i.members = False
         i.presences = False
 
+        self.statuses = (
+            Activity(type=ActivityType.watching, name="you pog"),
+            Activity(type=ActivityType.listening, name="Yuno Miles"),
+            Activity(type=ActivityType.watching, name="us grow"),
+            Activity(type=ActivityType.watching, name="Yuno Miles music videos"),
+            Activity(type=ActivityType.watching, name="thrzl break stuff"),
+            Activity(type=ActivityType.listening, name="Twenty One Pilots"),
+            Activity(type=ActivityType.watching, name="me being verified"),
+            Activity(type=ActivityType.watching, name="TOP music vids"),
+        )
         super().__init__(
             command_prefix=when_mentioned_or("pog ", "pog"),
             case_insensitive=True,
@@ -31,6 +47,7 @@ class PogBot(Bot):
                 839514280251359292,  # Random_1s#999
             ),
             help_command=PogBotHelp(),
+            status=choice(self.statuses)
         )
         self.ext = extensions or (
             "chatbot",
@@ -50,16 +67,6 @@ class PogBot(Bot):
             "poger",
             "poggus",
             "pogbot",
-        )
-        self.statuses = (
-            Activity(type=ActivityType.watching, name="you pog"),
-            Activity(type=ActivityType.listening, name="Yuno Miles"),
-            Activity(type=ActivityType.watching, name="us grow"),
-            Activity(type=ActivityType.watching, name="Yuno Miles music videos"),
-            Activity(type=ActivityType.watching, name="thrzl break stuff"),
-            Activity(type=ActivityType.listening, name="Twenty One Pilots"),
-            Activity(type=ActivityType.watching, name="me being verified"),
-            Activity(type=ActivityType.watching, name="TOP music vids"),
         )
         self.statcord_client = StatcordClient(self, environ["STATCORD_TOKEN"])
 

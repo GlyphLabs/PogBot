@@ -28,11 +28,18 @@ dunno = (  # List of error responses for ai
 
 
 class Chatbot(Cog):
+    __slots__ = (
+        "client",
+        "cd_mapping",
+        "bot_id",
+        "bot_key",
+        "http"
+    )
     def __init__(self, client: PogBot):
         self.client = client
         self.cd_mapping = CooldownMapping.from_cooldown(4, 10, BucketType.user)
-        self.bid = environ.get("BRAINSHOP_ID")
-        self.bkey = environ.get("BRAINSHOP_KEY")
+        self.bot_id = environ.get("BRAINSHOP_ID")
+        self.bot_key = environ.get("BRAINSHOP_KEY")
         self.http = ClientSession()
 
     def cog_unload(self):
@@ -67,7 +74,7 @@ class Chatbot(Cog):
         try:
             await channel.trigger_typing()
             response = await self.http.get(
-                f"http://api.brainshop.ai/get?bid={self.bid}&key={self.bkey}&uid={message.author.id}&msg={message.content}"
+                f"http://api.brainshop.ai/get?bid={self.bot_id}&key={self.bot_key}&uid={message.author.id}&msg={message.content}"
             )
             res = await response.json()
             await message.reply(res["cnt"])
@@ -83,7 +90,7 @@ class Chatbot(Cog):
         try:
             print(message)
             response = await self.http.get(
-                f"http://api.brainshop.ai/get?bid={self.bid}&key={self.bkey}&uid={ctx.author.id}&msg={message}"
+                f"http://api.brainshop.ai/get?bid={self.bot_id}&key={self.bot_key}&uid={ctx.author.id}&msg={message}"
             )
             res = await response.json()
             await ctx.respond(res["cnt"])

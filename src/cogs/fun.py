@@ -11,12 +11,18 @@ from typing import Dict
 
 
 class Fun(Cog):
+    __slots__ = (
+        "bot",
+        "snipe_cache"
+    )
     def __init__(self, bot: PogBot):
         self.bot = bot
         self.snipe_cache: Dict[int, bytes] = {}
 
     @Cog.listener()
     async def on_message_delete(self, message: Message):
+        if not message.guild:
+            return None
         self.snipe_cache[message.guild.id] = packb(
             {"content": message.content, "author": message.author.id}
         )
