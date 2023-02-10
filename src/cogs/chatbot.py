@@ -28,13 +28,8 @@ dunno = (  # List of error responses for ai
 
 
 class Chatbot(Cog):
-    __slots__ = (
-        "client",
-        "cd_mapping",
-        "bot_id",
-        "bot_key",
-        "http"
-    )
+    __slots__ = ("client", "cd_mapping", "bot_id", "bot_key", "http")
+
     def __init__(self, client: PogBot):
         self.client = client
         self.cd_mapping = CooldownMapping.from_cooldown(4, 10, BucketType.user)

@@ -8,9 +8,8 @@ from bot import PogBot
 
 
 class Utils(Cog):
-    __slots__ = (
-        "bot"
-    )
+    __slots__ = "bot"
+
     def __init__(self, bot: PogBot):
         self.bot = bot
 

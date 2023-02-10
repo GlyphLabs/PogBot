@@ -7,11 +7,8 @@ from math import floor
 
 
 class Economy(Cog):
-    __slots__ = (
-        "bot",
-        "crime_msgs",
-        "jobs"
-    )
+    __slots__ = ("bot", "crime_msgs", "jobs")
+
     def __init__(self, bot):
         self.bot = bot
         self.crime_msgs = (

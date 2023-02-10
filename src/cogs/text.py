@@ -6,9 +6,8 @@ from bot import PogBot
 
 
 class Text(Cog):
-    __slots__ = (
-        "bot"
-    )
+    __slots__ = "bot"
+
     def __init__(self, bot: PogBot):
         self.bot = bot
 

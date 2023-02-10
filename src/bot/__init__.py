@@ -13,12 +13,8 @@ from logging import info
 
 
 class PogBot(Bot):
-    __slots__ = (
-        "statuses",
-        "ext",
-        "poglist",
-        "statcord_client"
-    )
+    __slots__ = ("statuses", "ext", "poglist", "statcord_client")
+
     def __init__(self, extensions: List[str] = None):
         i = Intents.all()
         i.message_content = True
@@ -47,7 +43,7 @@ class PogBot(Bot):
                 839514280251359292,  # Random_1s#999
             ),
             help_command=PogBotHelp(),
-            status=choice(self.statuses)
+            status=choice(self.statuses),
         )
         self.ext = extensions or (
             "chatbot",
