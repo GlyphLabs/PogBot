@@ -11,5 +11,5 @@ class HelpButtons(View):
             )
         )
         self.add_item(
-            Button(label="Github", url="https://github.com/ahino6942/public-PogBot")
+            Button(label="Github", url="https://github.com/purplabs/pogbot")
         )

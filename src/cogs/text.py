@@ -69,14 +69,10 @@ class Text(Cog):
                     f"**{ctx.author.mention} There was a problem, and I could not send the output. It may be too large or malformed**"
                 )
 
-    @slash_command(aliases=["e"])
+    @slash_command(description="Encrypt some text!")
     async def encrypt(self, ctx, *, s):
-        try:
-            cleanS = "".join(chr(ord(letter) + len(s)) for letter in s)
-        except Exception as e:
-            return await ctx.respond(
-                f"**Error: `{e}`. This probably means the input is malformed. Sorry, I'm not perfect and my creator is dumb**"
-            )
+        cleanS = "".join(chr(ord(letter) + len(s)) for letter in s)
+        
         if len(cleanS) <= 479:
             await ctx.respond(f"```{cleanS}```")
         else:
@@ -90,7 +86,7 @@ class Text(Cog):
                     f"**{ctx.author.mention} There was a problem, and I could not send the output. It may be too large or malformed**"
                 )
 
-    @slash_command(aliases=["d"])
+    @slash_command(description="Decrypt some text!")
     async def decrypt(self, ctx, *, s):
         try:
             cleanS = "".join(chr(ord(letter) - len(s)) for letter in s)
@@ -111,7 +107,7 @@ class Text(Cog):
                     f"**{ctx.author.mention} There was a problem, and I could not send the output. It may be too large or malformed**"
                 )
 
-    @slash_command()
+    @slash_command(description="dRuNkIfy sOmEtHiNg!")
     async def drunkify(self, ctx: Context, *, s: str):
         lst = (str.upper, str.lower)
         newText = "".join(choice(lst)(c) for c in s)

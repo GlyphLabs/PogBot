@@ -3,7 +3,7 @@ from aiohttp import ClientSession
 import discord
 
 from bot import PogBot
-from discord.ext.commands import slash_command
+from discord.ext.commands.core import slash_command
 from discord import ApplicationContext
 
 
@@ -42,31 +42,40 @@ class Meme(Cog):
         await ctx.respond(embed=embed)
 
     @slash_command(
-        description="Returns a random showerthought from reddit!", usage="showerthought"
+        description="Returns a random post from r/showerthoughts!"
     )
     @cooldown(1, 2, BucketType.user)
     async def showerthought(self, ctx):
         await self.meme(ctx, "showerthoughts")
 
-    @slash_command()
+    @slash_command(
+        description="Returns a random post from r/dankmemes!"
+    )
     @cooldown(1, 2, BucketType.user)
     async def dankmeme(self, ctx):
         await self.meme(ctx, "dankmemes")
+        
 
-    @slash_command()
+    @slash_command(
+        description="Returns a random post from r/antimeme!"
+    )
     @cooldown(1, 2, BucketType.user)
     async def antimeme(self, ctx):
         await self.meme(ctx, "antimeme")
 
-    @slash_command()
+    @slash_command(
+        description="Returns a random post from r/me_irl!"
+    )
     @cooldown(1, 2, BucketType.user)
     async def me_irl(self, ctx):
         await self.meme(ctx, "me_irl")
 
-    @slash_command(aliases=["codememe"])
+    @slash_command(
+        description="Returns a random post from r/programmerhumor!"
+    )
     @cooldown(1, 2, BucketType.user)
     async def programmerhumor(self, ctx):
-        await self.meme(ctx, "ProgrammerHumor")
+        await self.meme(ctx, "programmerhumor")
 
 
 def setup(bot):

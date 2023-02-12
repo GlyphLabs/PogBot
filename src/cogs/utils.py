@@ -36,7 +36,7 @@ class Utils(Cog):
     async def shutdown(self, ctx: ApplicationContext):
         await ctx.bot.close()
 
-    @slash_command(name="ping", description="Check bot latency")
+    @slash_command(name="ping", description="Check bot latency.")
     async def ping(self, ctx: ApplicationContext):
         await ctx.respond("`Pinging bot latency...`")
         times = []
@@ -71,7 +71,7 @@ class Utils(Cog):
         return
 
     @slash_command(
-        name="links", description="See important bot links", aliases=["invite"]
+        name="links", description="See important bot links."
     )
     async def links(self, ctx: ApplicationContext):
         embed = Embed(colour=Colour.orange())
@@ -93,7 +93,7 @@ class Utils(Cog):
         )
         await ctx.respond(embed=embed, ephemeral=True)
 
-    @slash_command()
+    @slash_command(description="Get information about the bot.")
     async def botinfo(self, ctx: ApplicationContext):
         embed = Embed(colour=Colour.orange())
         embed.set_author(

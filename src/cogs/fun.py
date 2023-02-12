@@ -38,7 +38,7 @@ class Fun(Cog):
             )
         )
 
-    @slash_command()
+    @slash_command(description="Combine two words")
     async def combine(self, ctx: ApplicationContext, name1: str, name2: str):
         name1letters = name1[: round(len(name1) / 2)]
         name2letters = name2[round(len(name2) / 2) :]
@@ -47,7 +47,7 @@ class Fun(Cog):
         emb.set_author(name=f"{name1} + {name2}")
         await ctx.respond(embed=emb)
 
-    @slash_command()
+    @slash_command(description="See the compatibility of two server members!")
     async def ship(self, ctx: ApplicationContext, name1: str, name2: str):
         shipnumber = randint(0, 100)
         if 0 <= shipnumber <= 10:
