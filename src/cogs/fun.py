@@ -16,7 +16,7 @@ class Fun(Cog):
     def __init__(self, bot: PogBot):
         self.bot = bot
         self.snipe_cache: Dict[int, bytes] = {}
-
+"""
     @Cog.listener()
     async def on_message_delete(self, message: Message):
         if not message.guild:
@@ -37,7 +37,7 @@ class Fun(Cog):
                 name=member.display_name, icon_url=member.display_avatar
             )
         )
-
+"""
     @slash_command(description="Combine two words")
     async def combine(self, ctx: ApplicationContext, name1: str, name2: str):
         name1letters = name1[: round(len(name1) / 2)]
