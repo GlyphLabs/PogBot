@@ -96,6 +96,11 @@ class PogBot(Bot):
             await message.channel.send(
                 "https://tenor.com/view/i-dont-have-friends-i-have-family-theyre-not-my-friends-theyre-my-family-more-than-friends-gif-16061717"
             )
+        if message.content == "nick":
+            nick_emoji = utils.get(self.emojis, id=1080683741367779359)
+            if not nick_emoji:
+                return
+            await message.add_reaction(nick_emoji)
 
     def run(self):
         token = environ.get("TOKEN")
