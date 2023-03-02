@@ -102,9 +102,9 @@ class PogBot(Bot):
             )
         if message.content == "nick":
             nick_emoji = utils.get(self.emojis, id=1080679970868842517)
-                if not nick_emoji:
-                    return
-                await message.add_reaction(nick_emoji)
+            if not nick_emoji:
+                return
+            await message.add_reaction(nick_emoji)
             
 
     def run(self):
