@@ -118,4 +118,3 @@ class PogBot(Bot):
         self.change_status.start()
 
 
-#
