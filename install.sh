@@ -1,23 +1,34 @@
 #/bin/bash
-POETRY_VERSION=1.3.2
- 
-sudo apt-get update && \
-  sudo apt-get install --no-install-suggests -- no-install-recommends --yes python3-venv gcc libpython3-dev && \
-  sudo apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
 
-python3 -m venv /venv
-/venv/bin/pip install --upgrade pip setuptools wheel
-/venv/bin/pip install "poetry=={POETRY_VERSION}"
+git clone https://github.com/PurpLabs/PogBot.git
+pip install poetry
+cd PogBot
+poetry install
+cd src
 
-cp pyproject.toml poetry.lock \
+env_file=".env"
 
-/venv/bin/poetry export --without-hashes --format requirements.txt --output /requirements.txt
+if [ ! -f "$env_file" ]; then
+  echo "You haven't filled out the environment variables yet!"
+  exit 1
+fi
 
-/venv/bin/pip install --disable-pip-version-check -r /requirements.txt
+missing_variables=0
 
-cp -R . /app
+required_variables=("TOKEN" "BRAINSHOP_ID" "BRAINSHOP_KEY" "STATCORD_TOKEN" "DATABASE_URL")
 
-cd /app
+while IFS='=' read -r name value || [ -n "$name" ]; do
+  if [[ $name != \#* ]]; then
+    if [[ "${required_variables[*]}" =~ $name && -z "${!name}" ]]; then
+      echo "Variable '$name' is not set in the environment file."
+      missing_variables=1
+    fi
+  fi
+done < "$env_file"
 
-/venv/bin/python3 src/main.py
+if [ $missing_variables -eq 0 ]; then
+  echo "All variables are set in the environment file."
+  python3 main.py
+else
+  echo "Some variables are missing in the environment file."
+fi
